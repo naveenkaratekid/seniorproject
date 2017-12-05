@@ -133,7 +133,7 @@ public class SearchDAO
     		return listOfFilteredSites;
     }
     
-    public static void storeUserSearch(String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters)
+    public static void storeUserSearch(String username, String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters)
     {
     		try
     		{
@@ -158,7 +158,32 @@ public class SearchDAO
     	try
 		{
             c1 = getConnection();
-            String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + "');";
+            String insertIntoPopularSearch = "insert into userSearch values ('" + search + "');";
+            PreparedStatement ps = c1.prepareStatement(insertIntoPopularSearch);
+            //Statement s = c1.createStatement();
+            
+            
+            int rs = ps.executeUpdate(insertIntoPopularSearch);
+            //int rs = s.executeUpdate(insertIntoUserProfile);
+           
+		}
+		catch(Exception e)
+		{
+			
+		}
+    		
+    }
+    
+    /*
+     *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
+     */
+    
+    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters) throws Exception
+    {
+    	try
+		{
+            c1 = getConnection();
+            String insertIntoUserSearch = "insert into searchHistory values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + "');";
             PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
             //Statement s = c1.createStatement();
             
@@ -171,8 +196,8 @@ public class SearchDAO
 		{
 			
 		}
-    		
     }
+    
     
     public static void storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws Exception
     {
@@ -240,12 +265,12 @@ public class SearchDAO
      * getUserProfile() will look to see if there is a particular username matching what the user enters.
      * 
      * */
-    public static String getUserProfile(String username)
+    public static String getUserProfile(String username, String password)
     {
 	    	try
 	    	{
 		    c1 = getConnection();
-		    String selectFromUserProfile = "select * from userProfile where username = '" + username + "';";
+		    String selectFromUserProfile = "select * from userProfile where username = '" + username + "' and password = '" + password + "';";
 		    Statement s = c1.createStatement();
 		    ResultSet rs = s.executeQuery(selectFromUserProfile);
 		    if(rs.next())

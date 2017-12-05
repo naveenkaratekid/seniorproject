@@ -243,8 +243,34 @@ public class searchScreen extends Application
                     public void handle(ActionEvent ae)
                     {
                         
-                        String data = db.getUserProfile(tf.getText()).toString();
-                        
+                        String data = db.getUserProfile(tf.getText(), pwBox.getText());
+                        if(data != null)
+                        {
+                        	   usernameLogin.setText(data);
+                     	   s1.close();
+                        }
+                        else
+                        {
+                        	Stage s11 = new Stage();
+                    		s11.setResizable(false);
+                    		GridPane gp = new GridPane();
+                         gp.setAlignment(Pos.CENTER);
+                         gp.setHgap(20);
+                         gp.setVgap(20);
+                         gp.setPadding(new Insets(25,25,25,25));   
+                         Text t = new Text("This account does not exist");
+                         t.setTranslateX(10);
+                         t.setTranslateY(10);
+                         t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+                         gp.add(t,0,0);
+                         
+                         s11.setWidth(500);
+                         s11.setHeight(100);
+                         Scene scene = new Scene(gp);
+                         s11.setScene(scene);
+                         s11.show();
+                        	   
+                        }           
                     }
                 }
                 );
