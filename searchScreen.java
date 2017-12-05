@@ -33,7 +33,7 @@ import java.sql.*;
 public class searchScreen extends Application
 {
     // instance variables - replace the example below with your own
-    database db = new database();
+    SearchDAO db = new SearchDAO();
     public void start(Stage s)
     { 
         GridPane gp = new GridPane();
@@ -243,7 +243,7 @@ public class searchScreen extends Application
                     public void handle(ActionEvent ae)
                     {
                         
-                        String data = db.getUserProfile(tf.getText(), tf1.getText()).toString();
+                        String data = db.getUserProfile(tf.getText()).toString();
                         
                     }
                 }
@@ -393,7 +393,7 @@ public class searchScreen extends Application
                                 }
                                 catch (Exception e)
                                 {
-                                        e.printStackTrace();
+                                        // create pop up that contains the error message
                                 }
                             }
                         }
