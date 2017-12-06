@@ -12,7 +12,16 @@ public class SearchDAO
 	private static String username, firstName, lastName, password, email, address;
 	private static int zipcode, distance;
 	private static String rating;
+	private static String price;
 	
+	public static String getPrice() {
+		return price;
+	}
+
+	public static void setPrice(String price) {
+		SearchDAO.price = price;
+	}
+
 	public static String getRating() {
 		return rating;
 	}
@@ -133,12 +142,12 @@ public class SearchDAO
     		return listOfFilteredSites;
     }
     
-    public static void storeUserSearch(String username, String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters)
+    public static void storeUserSearch(String username, String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters, String price)
     {
     		try
     		{
                 c1 = getConnection();
-                String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + "');";
+                String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
                 PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
                 //Statement s = c1.createStatement();
                 
@@ -178,12 +187,12 @@ public class SearchDAO
      *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
      */
     
-    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters) throws Exception
+    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters, String price) throws Exception
     {
     	try
 		{
             c1 = getConnection();
-            String insertIntoUserSearch = "insert into searchHistory values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + "');";
+            String insertIntoUserSearch = "insert into searchHistory values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
             PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
             //Statement s = c1.createStatement();
             
@@ -199,27 +208,26 @@ public class SearchDAO
     }
     
     
-    public static void storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws Exception
+    public static void storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws MySQLIntegrityConstraintViolationException
     {
         try
         {
             c1 = getConnection();
             String insertIntoUserProfile = "insert into userProfile values ('" + username + "', '" + firstName + "', '" + lastName + "', '" + password + "', " + zipcode + ", '" + email + "', '" + address + "');";
-            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+           // PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
             Statement s = c1.createStatement();
             
             try
             {
             	 int rs = s.executeUpdate(insertIntoUserProfile);
+            	 
             }
             catch(MySQLIntegrityConstraintViolationException me)
             {
-            		throw new Exception("This email already exists");
+            		throw new Exception("This account already exists");
             }
             
             //ResultSet rs = s.executeQuery(insertIntoUserProfile);
-           
-           
             
            /* if(rs.next())
             {
@@ -248,7 +256,6 @@ public class SearchDAO
             		
             }*/
             	
-
             /*while(rs.next())
             {
             		

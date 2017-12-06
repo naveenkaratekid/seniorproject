@@ -18,6 +18,9 @@ import javafx.animation.*;
 import javafx.scene.control.cell.*;
 import java.io.File;
 import java.util.*;
+
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 import java.io.FilenameFilter;
 import javafx.stage.*;
 
@@ -62,7 +65,38 @@ public class searchScreen extends Application
         t.setTranslateY(0);
         gp.add(t, 0, 0);
         
-
+        // Price
+        MenuButton price = new MenuButton("Price");
+        price.setMinWidth(100);
+        price.setMaxWidth(100);
+        MenuItem price1 = new MenuItem("$");
+        price1.setOnAction(event -> 
+        {
+            db.setPrice(price1.getText());
+            price.setText(price1.getText());
+        });
+        
+        MenuItem price2 = new MenuItem("$$");
+        price2.setOnAction(event -> 
+        {
+            db.setPrice(price2.getText());
+            price.setText(price2.getText());
+        });
+        MenuItem price3 = new MenuItem("$$$");
+        price3.setOnAction(event -> 
+        {
+            db.setPrice(price3.getText());
+            price.setText(price3.getText());
+        });
+        price.getItems().addAll(price1, price2, price3);
+        price.setTranslateX(300);
+        price.setTranslateY(200);
+        gp.add(price, 0,0);
+        Label priceLabel = new Label("Price");
+        priceLabel.setTranslateX(260);
+        priceLabel.setTranslateY(200);
+        gp.add(priceLabel,0,0);
+        
         // Rating
         MenuButton mb = new MenuButton("Rating");
         mb.setMinWidth(100);
@@ -415,10 +449,29 @@ public class searchScreen extends Application
                                 try
                                 {
                                         db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
-                                        System.out.println("Stored");
+                                        
                                 }
-                                catch (Exception e)
+                                catch (MySQLIntegrityConstraintViolationException e)
                                 {
+	                                	Stage s11 = new Stage();
+	                            		s11.setResizable(false);
+	                            		GridPane gp = new GridPane();
+	                                 gp.setAlignment(Pos.CENTER);
+	                                 gp.setHgap(20);
+	                                 gp.setVgap(20);
+	                                 gp.setPadding(new Insets(25,25,25,25));   
+	                                 Text t = new Text("This account already exists");
+	                                 t.setTranslateX(10);
+	                                 t.setTranslateY(10);
+	                                 t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+	                                 gp.add(t,0,0);
+                                 
+	                                 s11.setWidth(500);
+	                                 s11.setHeight(100);
+	                                 Scene scene = new Scene(gp);
+	                                 s11.setScene(scene);
+	                                 s11.show();
+                                			
                                         // create pop up that contains the error message
                                 }
                             }
