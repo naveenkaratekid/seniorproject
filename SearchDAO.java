@@ -1,4 +1,7 @@
 import java.sql.*;
+import java.util.Date;
+//import java.sql.Date;
+import java.text.*;
 import java.util.*;
 
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
@@ -13,7 +16,18 @@ public class SearchDAO
 	private static int zipcode, distance;
 	private static String rating;
 	private static String price;
+	private static Date date;
+	/*private static DateFormat df = new SimpleDateFormat("MM/dd/yyyy h::mm a");
+	static String dateStr = df.format(date);*/
 	
+	public static Date getDate() {
+		return date;
+	}
+
+	public static void setDate(Date date) {
+		SearchDAO.date = date;
+	}
+
 	public static String getPrice() {
 		return price;
 	}
@@ -132,6 +146,26 @@ public class SearchDAO
     		listOfFilteredSites = new ArrayList<String>();
     }
     
+    public static void storeResults(String result)
+    {
+    	try
+		{
+            c1 = getConnection();
+            String insertIntoResult = "insert into userSearch values ('" + result + "');";
+            PreparedStatement ps = c1.prepareStatement(insertIntoResult);
+            //Statement s = c1.createStatement();
+            
+            
+            int rs = ps.executeUpdate(insertIntoResult);
+            //int rs = s.executeUpdate(insertIntoUserProfile);
+           
+		}
+		catch(Exception e)
+		{
+			
+		}
+    }
+    
     /*
      * storeFilter() will store the site name if the site filter is checked by the user via checkbox.
      * 
@@ -142,12 +176,13 @@ public class SearchDAO
     		return listOfFilteredSites;
     }
     
-    public static void storeUserSearch(String username, String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters, String price)
+    public static void storeUserSearch(String username, String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters, String price, String date)
     {
     		try
     		{
+    			    //date = dateStr;
                 c1 = getConnection();
-                String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
+                String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "', '" + date + "');";
                 PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
                 //Statement s = c1.createStatement();
                 
@@ -183,6 +218,71 @@ public class SearchDAO
     		
     }
     
+    public static userProfile getUserProfileDetails(String username)
+    {
+    	try
+		{
+            c1 = getConnection();
+            String selectFromUserProfile = "select * from userProfile where username = '" + username + "';";
+            PreparedStatement ps = c1.prepareStatement(selectFromUserProfile);
+            ResultSet rs = ps.executeQuery(selectFromUserProfile);
+            if(rs.next())
+		    {
+            		userProfile up = new userProfile();
+            		up.setFirstName(rs.getString(2));
+            		
+            		up.setLastName(rs.getString(3));
+            		
+            		up.setPassword(rs.getString(4));
+            		
+            		up.setZipcode(rs.getInt(5));
+            		
+            		up.setEmail(rs.getString(6));
+            		
+            		up.setAddress(rs.getString(7));
+
+		    		return up;
+		    }
+		    else 
+		    {
+		    		return null;
+		    }
+		}
+		catch(Exception e)
+		{
+			
+		}
+    		return null;
+    }
+   
+    
+   public static void updateUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address)
+    {
+    		try
+		{
+    			System.out.println(username);
+    			System.out.println(firstName);
+    			System.out.println(lastName);
+    			System.out.println(password);
+    			System.out.println(zipcode);
+    			System.out.println(email);
+    			System.out.println(address);
+            c1 = getConnection();
+            String insertIntoUserProfile = "update userProfile set firstname = '" + firstName + "', lastName = '" + lastName + "', password = '" + password + "', zipcode = " + zipcode + ", email = '" + email + "', address = '" + address + "';";
+            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+            //Statement s = c1.createStatement();
+            System.out.println(insertIntoUserProfile);
+            
+            int rs = ps.executeUpdate(insertIntoUserProfile);
+            //int rs = s.executeUpdate(insertIntoUserProfile);
+           
+		}
+		catch(Exception e)
+		{
+			
+		}
+    }
+    
     /*
      *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
      */
@@ -192,7 +292,7 @@ public class SearchDAO
     	try
 		{
             c1 = getConnection();
-            String insertIntoUserSearch = "insert into searchHistory values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
+            String insertIntoUserSearch = "insert into generalSearch values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
             PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
             //Statement s = c1.createStatement();
             
@@ -212,8 +312,9 @@ public class SearchDAO
     {
         try
         {
+        		int i = 0;
             c1 = getConnection();
-            String insertIntoUserProfile = "insert into userProfile values ('" + username + "', '" + firstName + "', '" + lastName + "', '" + password + "', " + zipcode + ", '" + email + "', '" + address + "');";
+            String insertIntoUserProfile = "insert into userProfile values ('" + username + "', '" + firstName + "', '" + lastName + "', '" + password + "', " + zipcode + ", '" + email + "', '" + address + "'," + i + ");";
            // PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
             Statement s = c1.createStatement();
             
@@ -260,7 +361,7 @@ public class SearchDAO
             {
             		
             }*/
-            
+            i++;
         }
         catch(Exception e)
         {

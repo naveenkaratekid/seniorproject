@@ -35,10 +35,12 @@ import java.sql.*;
 @SuppressWarnings("unchecked")
 public class searchScreen extends Application
 {
+	private String rating = "";
     // instance variables - replace the example below with your own
     SearchDAO db = new SearchDAO();
     public void start(Stage s)
     { 
+    		
         GridPane gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
         gp.setHgap(20);
@@ -47,14 +49,7 @@ public class searchScreen extends Application
        
     
         Button searchButton = new Button("Search");
-        searchButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            public void handle(ActionEvent ae)
-            {
-                
-            }
-        }
-        );
+        
         searchButton.setTranslateX(325);
         searchButton.setTranslateY(180);
         gp.add(searchButton, 0,0);
@@ -136,6 +131,38 @@ public class searchScreen extends Application
             db.setRating(m5.getText());
             mb.setText(m5.getText());
         });
+        
+        if(mb.getText() == "☆")
+        {
+        		rating = "1";
+        }
+        
+        if(mb.getText() == "☆☆")
+        {
+        		rating = "2";
+        }
+        
+        if(mb.getText() == "☆☆☆")
+        {
+        		rating = "3";
+        }
+        
+        if(mb.getText() == "☆☆☆☆")
+        {
+        		rating = "4";
+        }
+        
+        if(mb.getText() == "☆☆☆☆☆")
+        {
+        		rating = "5";
+        }
+        
+        Button update = new Button("Update Profile");
+        update.setTranslateX(300);
+        update.setTranslateY(0);
+        update.setVisible(false);
+        
+        gp.add(update, 0, 0);
         
         mb.getItems().addAll(m1, m2, m3, m4, m5);
         mb.setTranslateX(-100);
@@ -281,10 +308,132 @@ public class searchScreen extends Application
                         if(data != null)
                         {
                         	   usernameLogin.setText(data);
+                        	   update.setVisible(true);
+                        	   update.setOnAction(new EventHandler<ActionEvent>()
+                			   {
+                        		   public void handle(ActionEvent ae)
+                        		   {
+                        			   System.out.println(tf.getText());
+                        			   userProfile up = db.getUserProfileDetails(tf.getText());
+                        			   Stage s2 = new Stage();
+                        			   s2.setResizable(false);
+                                    s2.setTitle("Update Profile");
+                                    GridPane gp = new GridPane();
+                                    gp.setAlignment(Pos.CENTER);
+                                    gp.setHgap(20);
+                                    gp.setVgap(20);
+                                    gp.setPadding(new Insets(25,25,25,25));
+                                    Text t = new Text("Update Profile");
+                                    t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+                                    gp.add(t,0,0,2,1);
+                                    
+                                    PasswordField pw = new PasswordField(); // password
+                                    pw.setText(up.getPassword());
+                                    
+                                    TextField tf2 = new TextField(); // first name
+                                    tf2.setText(up.getFirstName());
+                                   
+                                    TextField tf3 = new TextField(); // last name
+                                    tf3.setText(up.getLastName());
+                                    
+                                    TextField tf4 = new TextField(); // zipcode
+                                    tf4.setText(Integer.toString(up.getZipcode()));
+                                    
+                                    TextField tf5 = new TextField(); // email
+                                    tf5.setText(up.getEmail());
+                                    
+                                    TextField tf6 = new TextField(); // address
+                                    tf6.setText(up.getAddress());
+                                    
+                                    
+                                    Label password = new Label("Password");
+                                    pw.setPromptText("Password");
+                                    gp.add(pw, 1,2);
+                                    gp.add(password, 0,2);
+                                    
+                                    Label firstName = new Label("First Name");
+                                    tf2.setPromptText("First Name");
+                                    gp.add(tf2, 1,3);
+                                    gp.add(firstName, 0,3);
+                                    
+                                    Label lastName = new Label("Last Name");
+                                    tf3.setPromptText("Last Name");
+                                    gp.add(tf3, 1,4);
+                                    gp.add(lastName, 0,4);
+                                    
+                                    Label zipcode = new Label("Zipcode");
+                                    tf4.setPromptText("Zipcode");
+                                    gp.add(tf4, 1,5);
+                                    gp.add(zipcode, 0,5);
+                                    String code = tf4.getText();
+
+                                    
+                                    if(code.matches("[0-9]*") )
+                                    {
+                                        if(tf4.getLength() > 5)
+                                        {
+                                            Integer.parseInt(tf4.getText());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        System.out.println("Zipcode must be numbers and not be longer than 5 digits");    
+                                    }
+                                    
+                                    Label email = new Label("Email");
+                                    tf5.setPromptText("Email Address");
+                                    gp.add(tf5, 1,6);
+                                    gp.add(email, 0,6);
+                                    
+                                    Label address = new Label("Address");
+                                    tf6.setPromptText("Home Address");
+                                    gp.add(tf6, 1,7);
+                                    gp.add(address, 0,7);
+                                    
+                                    Button update = new Button("Update");
+                                    update.setTranslateX(175);
+                                    update.setTranslateY(-10);
+                                    gp.add(update, 0, 0);
+                                    update.setOnAction(new EventHandler<ActionEvent>()
+                                		{
+                                    		public void handle(ActionEvent ae)
+                                    		{
+                                    			System.out.println("Password: " + pw.getText());
+                                    			db.setUsername(tf.getText());
+                                    			db.setFirstName(tf2.getText());
+                                    			db.setPassword(pw.getText());
+                                    			db.setLastName(tf3.getText());
+                                    			db.setZipcode(Integer.parseInt(tf4.getText()));
+                                    			db.setEmail(tf5.getText());
+                                    			db.setAddress(tf6.getText());
+                                    			
+                                    			try
+                                    			{
+                                    			    System.out.println("Updating");
+                                                db.updateUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pw.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
+                                                             
+                                    			}
+                                    			catch(Exception e)
+                                    			{
+                                    				e.printStackTrace();
+                                    				// create popup with error
+                                    			}
+                                    		}
+                                		}
+                                    );
+                                    Scene scene = new Scene(gp);
+                                    s2.setScene(scene);
+                                    s2.show();
+                        		   }
+                			   }
+                           );
+
                      	   s1.close();
                         }
+                        
                         else
                         {
+                        	
                         	Stage s11 = new Stage();
                     		s11.setResizable(false);
                     		GridPane gp = new GridPane();
@@ -310,7 +459,7 @@ public class searchScreen extends Application
                 );
                 
                 gp.add(login,0,0);
-                
+              
                 
                 // This is important because we are checking to see if the name from tf.getText() exists.
                 /*
@@ -402,36 +551,7 @@ public class searchScreen extends Application
                         tf6.setPromptText("Home Address");
                         gp.add(tf6, 1,7);
                         gp.add(address, 0,7);
-                        
-  
-                        /*
-                         *  String checkForEmail = "select email from userProfile where email = " + tf5.getText() + ";";
-                         *  String checkForUserName = "select * from userProfile where name = " + tf.getText() + ";";
-                         *  Statement userNameStmt = connection.createStatement();
-                         *  ResultSet rs = userNameStmt.executeQuery(checkForUserName);
-                         *  if(rs.absolute(1)
-                         *  {
-                         *      
-                         *      println("userName already exists");
-                         *  }
-                         *  else
-                         *  {
-                         *      try
-                         *      {
-                         *         db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
-                         *         
-                         *      }
-                         *      catch(Exception e)
-                         *      {
-                         *          e.printStackTrace();
-                         *      }
-                         *      String addUserName = "insert into userProfile values ('" + tf.getText() + "');";
-                         *      Statement userNameStmt = connection.createStatement();
-                         *      rs = userNameStmt.executeQuery(addUserName);
-                         *  }
-                      
-                         */
-                        
+ 
                         Button signUp = new Button("Sign Up");
                         signUp.setTranslateX(275);
                         signUp.setTranslateY(375);
@@ -449,7 +569,8 @@ public class searchScreen extends Application
                                 try
                                 {
                                         db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
-                                        
+                                        s2.close();
+                                        s1.close();          
                                 }
                                 catch (MySQLIntegrityConstraintViolationException e)
                                 {
@@ -488,9 +609,7 @@ public class searchScreen extends Application
                     }
                 }
                 );
-                
                 gp.add(enroll, 5, 2);
-                
                 Scene scene = new Scene(gp);
                 s1.setScene(scene);
                 s1.show();
@@ -503,6 +622,8 @@ public class searchScreen extends Application
         login.setTranslateY(35);
         gp.add(login, 0, 0);
         
+        ArrayList<String> filter = new ArrayList<String>();
+        
         CheckBox yelp = new CheckBox("Yelp");
         yelp.selectedProperty().addListener(new ChangeListener<Boolean>() 
         {
@@ -510,11 +631,13 @@ public class searchScreen extends Application
                 {
                     if(yelp.isSelected())
                     {
+                    	   filter.add(yelp.getText());
                         db.storeFilter(yelp.getText());
                         System.out.println("Yelp selected");
                     }
                     else
                     {
+                    		filter.remove(yelp.getText());
                         db.storeFilter(yelp.getText()).remove(yelp.getText());
                         System.out.println("Yelp unselected");
                     }
@@ -530,11 +653,13 @@ public class searchScreen extends Application
                 {
                     if(tripAdvisor.isSelected())
                     {
+                    		filter.add(tripAdvisor.getText());
                         db.storeFilter(tripAdvisor.getText());
                         System.out.println("tripAdvisor selected");
                     }
                     else
                     {
+                     	filter.remove(tripAdvisor.getText());
                         db.storeFilter(tripAdvisor.getText()).remove(tripAdvisor.getText());
                         System.out.println("tripAdvisor unselected");
                     }
@@ -550,11 +675,13 @@ public class searchScreen extends Application
                 {
                     if(googlePlaces.isSelected())
                     {
+                    	filter.add(googlePlaces.getText());
                         db.storeFilter(googlePlaces.getText());
                         System.out.println("Google Places selected");
                     }
                     else
                     {
+                    	filter.remove(googlePlaces.getText());
                         db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
                         System.out.println("Google Places unselected");
                     }
@@ -571,11 +698,13 @@ public class searchScreen extends Application
                 {
                     if(foursquare.isSelected())
                     {
+                    		filter.add(foursquare.getText());
                         db.storeFilter(foursquare.getText());
                         System.out.println("Foursquare selected");
                     }
                     else
                     {
+                    		filter.remove(foursquare.getText());
                         db.storeFilter(foursquare.getText()).remove(foursquare.getText());
                         //listOfFilters.remove(foursquare.getText());
                         System.out.println("Foursquare unselected");
@@ -601,6 +730,26 @@ public class searchScreen extends Application
         gp.add(tripAdvisor, 0, 0);
         gp.add(googlePlaces, 0, 0);
         gp.add(foursquare, 0, 0);
+        
+        searchButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            public void handle(ActionEvent ae)
+            {
+               if(usernameLogin.getText() == "Not Logged In")
+               {
+            	   		try
+            	   		{
+            	   			db.storeGeneralSearch(tf.getText(), zipCodeOrCity.getText(), Integer.parseInt(rating), filter, price.getText());
+            	   		}
+            	   		catch(Exception e)
+            	   		{
+            	   			e.printStackTrace();
+            	   		}
+            	   		
+               }
+            }
+        }
+        );
         
         VBox root = new VBox(10);
         //root.getStylesheets().add(this.getClass().getResource("searchButton.css").toExternalForm());
