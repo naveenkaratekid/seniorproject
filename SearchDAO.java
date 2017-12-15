@@ -218,6 +218,7 @@ public class SearchDAO
     		
     }
     
+    
     public static userProfile getUserProfileDetails(String username)
     {
     	try
@@ -279,7 +280,7 @@ public class SearchDAO
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}
     }
     
@@ -312,7 +313,7 @@ public class SearchDAO
     {
         try
         {
-        		int i = 0;
+        		int i = 0; // ID
             c1 = getConnection();
             String insertIntoUserProfile = "insert into userProfile values ('" + username + "', '" + firstName + "', '" + lastName + "', '" + password + "', " + zipcode + ", '" + email + "', '" + address + "'," + i + ");";
            // PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
@@ -328,39 +329,7 @@ public class SearchDAO
             		throw new Exception("This account already exists");
             }
             
-            //ResultSet rs = s.executeQuery(insertIntoUserProfile);
             
-           /* if(rs.next())
-            {
-            		String selectUserNameFromUserProfile = "select * from userProfile where exists (select * from userProfile where username = '" + username + "');";
-            		ps = c1.prepareStatement(selectUserNameFromUserProfile);
-            		rs = ps.executeQuery(selectUserNameFromUserProfile);
-            }
-            
-            if(rs.next())
-            {
-            		String selectEmailFromUserProfile = "select * from userProfile where exists (select * from userProfile where email = '" + email + "');";
-            		ps = c1.prepareStatement(selectEmailFromUserProfile);
-            		rs = ps.executeQuery(selectEmailFromUserProfile);
-            }*/
-            
-           /* else
-            {
-            		if(rs.equals(username))
-            		{
-            			System.out.println("Username is taken");
-            		}
-            		if(rs.equals(email))
-            		{
-            			System.out.println("An account associated with " + email + " already exists");
-            		}
-            		
-            }*/
-            	
-            /*while(rs.next())
-            {
-            		
-            }*/
             i++;
         }
         catch(Exception e)
@@ -420,6 +389,48 @@ public class SearchDAO
         return null;
     }
     
+    public static ArrayList<String> numOfTimesSearched(String curDate) throws Exception
+    {
+    		
+    		try
+    		{
+    			ArrayList<String> list = new ArrayList<String>();
+    			c1 = getConnection();
+    		    //String numOfTimesSearchedCall = "call numOfTimesSearched (@" + curDate + ", @" + year + ", @" + name + ", @" + count + ");";
+    		    String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
+
+    		    CallableStatement cs = c1.prepareCall(numOfTimesSearchedCall);
+    		    cs.setString(1,  curDate);
+    		    cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+    		    cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+    		    cs.registerOutParameter(4, java.sql.Types.INTEGER);
+    		    
+    		    ResultSet rs = cs.executeQuery();
+    		    while(rs.next())
+    		    {
+    		    		String yearOut = rs.getString(1);
+        		    String username = rs.getString(2);
+        		    int counter = rs.getInt(3);
+        		    
+        		    System.out.println(yearOut);
+        		    System.out.println(username);
+        		    System.out.println(curDate);
+        		    
+        		    list.add(username);
+        		    list.add(yearOut);
+        		    list.add(Integer.toString(counter));
+    		    }
+    		    
+    		    
+    		    
+    		    return list;
+    		}
+    		catch(Exception e)
+    		{
+    			e.printStackTrace();
+    			return null;
+    		}
+    }
     
     public static void main(String[] args) throws Exception
     {
