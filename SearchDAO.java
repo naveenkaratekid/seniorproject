@@ -269,7 +269,7 @@ public class SearchDAO
     			System.out.println(email);
     			System.out.println(address);
             c1 = getConnection();
-            String insertIntoUserProfile = "update userProfile set firstname = '" + firstName + "', lastName = '" + lastName + "', password = '" + password + "', zipcode = " + zipcode + ", email = '" + email + "', address = '" + address + "';";
+            String insertIntoUserProfile = "update userProfile set firstname = '" + firstName + "', lastName = '" + lastName + "', password = '" + password + "', zipcode = " + zipcode + ", email = '" + email + "', address = '" + address + "' where username = '" + username + "';";
             PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
             //Statement s = c1.createStatement();
             System.out.println(insertIntoUserProfile);
@@ -280,7 +280,7 @@ public class SearchDAO
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
     }
     

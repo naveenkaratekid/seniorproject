@@ -415,7 +415,7 @@ public class searchScreen extends Application
                                     			}
                                     			catch(Exception e)
                                     			{
-                                    				e.printStackTrace();
+                                    				//e.printStackTrace();
                                     				// create popup with error
                                     			}
                                     		}
