@@ -15,6 +15,8 @@ public class testhttp
     // instance variables - replace the example below with your own
     private static Scanner scanner;
     
+    // Methods containing the word 'review' are the ones that display review text based on rating number and what was retrieved from the search.
+    // Methods containing the word 'test' are the ones that set up the API call and perform the actual search
     ///////////////////////////////////
     public static String testFoursquare(String search, String location) throws Exception
     {
@@ -26,8 +28,6 @@ public class testhttp
         Request request = new Request.Builder()
           .url(url)
           .get()
-          .addHeader("Cache-Control", "no-cache")
-          .addHeader("Postman-Token", "78e7c7fe-5b16-f5dc-d84d-c94d3041627a")
           .build();
         
         Response response = client.newCall(request).execute();
@@ -102,7 +102,7 @@ public class testhttp
     public static String foursquareReview(List<String> list) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
-        System.out.println("-------------Reviews-------------");
+        System.out.println("-------------Foursquare Reviews-------------");
         String url = "";
         for(String id: list)
         {
@@ -112,8 +112,6 @@ public class testhttp
             Request request = new Request.Builder()
               .url(url)
               .get()
-              .addHeader("Cache-Control", "no-cache")
-              .addHeader("Postman-Token", "82f7de10-1cc3-4a61-2200-2557d46eb74a")
               .build();
             
             Response response = client.newCall(request).execute();
@@ -150,7 +148,6 @@ public class testhttp
                 System.out.println("No tips available");
             }
             
-            
             /*JSONObject jo1 = jo.getJSONObject("response").getJSONObject("tips");
               
             try
@@ -165,8 +162,7 @@ public class testhttp
                     System.out.println();
                     
                 }
-            
-                
+
             }
             catch(Exception e)
             {
@@ -179,18 +175,15 @@ public class testhttp
     }
     
     ///////////////////////////////////
-    
-    public static String testGoogle(String search, String location) throws Exception
+    public static String testGoogle(String search, String location, int rating) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
         String searchLocation = search + " " + location;
-        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + searchLocation + "&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw";
+        //String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + searchLocation + "&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw";
+        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+searchLocation+"&radius=500&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw";
         Request request = new Request.Builder()
           .url(url)
           .get()
-          .addHeader("Authorization", "AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw")
-          .addHeader("Cache-Control", "no-cache")
-          .addHeader("Postman-Token", "3c584ef2-382a-4214-d26b-3f2a96908862")
           .build();
         
         Response response = client.newCall(request).execute();
@@ -215,7 +208,7 @@ public class testhttp
                 c = jo1.getString("name");
                 d = jo1.getString("formatted_address");
                 
-                System.out.println("Rating: " + a);
+                System.out.println("Average Rating: " + a + " " + getStar(a));
                 System.out.println("Place ID: "  + b);
                 System.out.println("Name: "  + c);
                 System.out.println("Address: "  + d);
@@ -227,24 +220,24 @@ public class testhttp
             ex.printStackTrace();
             System.out.println("There is no info");
         }
-        googleReview(list);
+        googleReview(list, rating);
         return "";
     }
     
-    public static String googleReview(List<String> list) throws Exception
+    public static String googleReview(List<String> list, int rating) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
-        System.out.println("-------------Reviews-------------");
+        System.out.println("-------------Google Reviews-------------");
         String url = "";
+        //HashMap<Integer, String> ratingText = new HashMap<Integer, String>();
+        Map<String, Integer> ratingText = new HashMap<String, Integer>();
         for(String id: list)
         {
-            url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw"; 
+            //url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw"; 
+            url = "https://maps.googleapis.com/maps/api/place/details/json?placeid="+id+"&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw";
             Request request = new Request.Builder()
               .url(url)
               .get()
-              .addHeader("Authorization", "AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw")
-              .addHeader("Cache-Control", "no-cache")
-              .addHeader("Postman-Token", "d7074597-b2ad-ee30-71c9-34cabb7548a7")
               .build();
             
             Response response = client.newCall(request).execute();
@@ -266,9 +259,18 @@ public class testhttp
                     JSONObject jo1 = ja2.getJSONObject(i);
                     a = jo1.getInt("rating");
                     b = jo1.getString("text");
-                    System.out.println("Rating: " + a);
-                    System.out.println("Text :"  + b);
+                    ratingText.put(b, (int)a);
                     
+                }
+
+                for(HashMap.Entry<String, Integer> m1: ratingText.entrySet())
+                {
+                    int r = m1.getValue();
+                    if(r == rating)
+                    {
+                        System.out.println(r + ": Rating: " + getStar(r)+ "," + m1.getKey());
+                        System.out.println();
+                    }
                 }
             }
             catch(Exception e)
@@ -276,15 +278,13 @@ public class testhttp
                 e.printStackTrace();
                 //System.out.println("There are no reviews for this place yet");
             }
-            
-            
+  
         }
         
         //String url = "https://api.yelp.com/v3/businesses/" + id + "/reviews";
         
         return "";
     }
-
    
     //////////////////////////
     
@@ -298,8 +298,6 @@ public class testhttp
           .url(url)
           .get()
           .addHeader("Authorization", "Bearer ImCmvvA0XcBaU7KsxqVJYelpHHW1ftRTH8rOaTbYHph-7JfrXLhlGVWmtz3aIkhcrVebKlkII5YDnsmsOCynMvA4vACvehTV6mDhIt0E1Kq6dmorjJNrsalilge3WXYx")
-          .addHeader("Cache-Control", "no-cache")
-          .addHeader("Postman-Token", "28467295-872e-1d4b-2d95-1468cfbc9110")
           .build();
         
         Response response = client.newCall(request).execute();
@@ -307,7 +305,7 @@ public class testhttp
         JSONObject jo = new JSONObject(s);
         JSONArray ja = jo.getJSONArray("businesses");
         String a,b,c,d,f,g;
-        int e = 0;
+        double e = 0;
         ArrayList<String> list = new ArrayList<String>();
         for(int i = 0; i < ja.length(); i++)
         {
@@ -357,39 +355,35 @@ public class testhttp
             
             try
             {
-                e = jo1.getInt("rating");
-                System.out.println("Rating: " + rating);
-                //System.out.println("Rating: " + rating);
-                
+                e = jo1.getDouble("rating");
+                System.out.println("Average Rating: " + e + " " + getStar((int)e));
             }
             catch(Exception ex)
             {
                 System.out.println("There are no ratings for this business");
             }
-            //System.out.println("The rating is " + e);
-            //yelpReview(list, rating);
             
             System.out.println();
             System.out.println();
         }
-        //yelpReview(list);
         yelpReview(list, rating);
-        //System.out.println("The rating is " + e);
-        return list.toString();
+        return "";
     }
     
-    public static String testYelp(String term, String location, int price, int radius) throws Exception
+    
+    public static String testYelp(String term, String location, double rating, int price, int radius) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
+        //double radius = radiusMiles * 1609.34;
         radius *= 1609.34;
-        //String url = "https://api.yelp.com/v3/businesses/search?term=" + "\"" + term + "\"" + "&location=\"" + location + "\"";
+        // miles
+        System.out.println("Radius: " + radius + " meters");
+        
         String url = "https://api.yelp.com/v3/businesses/search?term="+term+"&location="+location+"&price="+price+"&radius="+radius;
         Request request = new Request.Builder()
           .url(url)
           .get()
           .addHeader("Authorization", "Bearer ImCmvvA0XcBaU7KsxqVJYelpHHW1ftRTH8rOaTbYHph-7JfrXLhlGVWmtz3aIkhcrVebKlkII5YDnsmsOCynMvA4vACvehTV6mDhIt0E1Kq6dmorjJNrsalilge3WXYx")
-          .addHeader("Cache-Control", "no-cache")
-          .addHeader("Postman-Token", "28467295-872e-1d4b-2d95-1468cfbc9110")
           .build();
         
         Response response = client.newCall(request).execute();
@@ -397,7 +391,7 @@ public class testhttp
         JSONObject jo = new JSONObject(s);
         JSONArray ja = jo.getJSONArray("businesses");
         String a,b,c,d,f,g;
-        int e = 0;
+        double e = 0;
         ArrayList<String> list = new ArrayList<String>();
         for(int i = 0; i < ja.length(); i++)
         {
@@ -448,7 +442,7 @@ public class testhttp
             try
             {
                 e = jo1.getInt("rating");
-                System.out.println("Rating: " + e);
+                System.out.println("Average Rating: " + e + " " + getStar((int)e));
             }
             catch(Exception ex)
             {
@@ -458,16 +452,23 @@ public class testhttp
             System.out.println();
             System.out.println();
         }
-        //yelpReview(list);
-        return list.toString();
+        yelpReview(list, (int)rating);
+        return "";
     }
     
     public static String yelpReview(List<String> list, int rating) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
-        System.out.println("-------------Reviews-------------");
+        System.out.println("-------------Yelp Reviews-------------");
         System.out.println();
         String url = "";
+        /* ratingText will store
+         * the rating and the text associated with that particular rating,
+         * making it easier to retrieve a particular string of text based on the rating number
+         */
+        
+        Map<Integer, String> ratingText = new HashMap<Integer, String>(); 
+        
         for(String id: list)
         {
             url = "https://api.yelp.com/v3/businesses/" + id + "/reviews"; 
@@ -475,8 +476,6 @@ public class testhttp
               .url(url)
               .get()
               .addHeader("Authorization", "Bearer ImCmvvA0XcBaU7KsxqVJYelpHHW1ftRTH8rOaTbYHph-7JfrXLhlGVWmtz3aIkhcrVebKlkII5YDnsmsOCynMvA4vACvehTV6mDhIt0E1Kq6dmorjJNrsalilge3WXYx")
-              .addHeader("Cache-Control", "no-cache")
-              .addHeader("Postman-Token", "dcd71075-0aff-d401-06dd-f4f2d418ea43")
               .build();
             
             Response response = client.newCall(request).execute();
@@ -491,30 +490,102 @@ public class testhttp
             try
             {
                 JSONArray ja = jo.getJSONArray("reviews");
-                int a = 0;
+                double a = 0;
                 String b = "";
                 for(int i = 0; i < ja.length(); i++)
                 {
                     JSONObject jo1 = ja.getJSONObject(i);
                     a = jo1.getInt("rating");
                     b = jo1.getString("text");
-                    System.out.println("Rating: " + a);
-                    System.out.println("Text :"  + b);
-                    
+                    ratingText.put((int)a, b);
+                }
+                
+                for(HashMap.Entry<Integer, String> m1: ratingText.entrySet())
+                {
+                    int r = m1.getKey();
+                    if(r == rating)
+                    {
+                        System.out.println(r + ": Rating: " + getStar(r) + String.format("\n") + m1.getValue());
+                        System.out.println();
+                    }
                 }
                 
             }
             catch(Exception e)
             {
-                //e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("There are no reviews for this place yet");
             } 
         }
         
-        
-        //String url = "https://api.yelp.com/v3/businesses/" + id + "/reviews";
-        
         return "";
+    }
+    
+    public static int getRating(String rating)
+    {
+        switch(rating)
+        {
+            case "☆":
+                return 1;
+            case "☆☆":
+                return 2;
+            case "☆☆☆":
+                return 3;
+            case "☆☆☆☆":
+                return 4;
+            case "☆☆☆☆☆":
+                return 5;
+            default:
+                return 3;
+        }
+    }
+    
+    public static String getStar(int rating)
+    {
+        switch(rating)
+        {
+            case 1:
+                return "☆";
+            case 2:
+                return "☆☆";
+            case 3:
+                return "☆☆☆";
+            case 4:
+                return "☆☆☆☆";
+            case 5:
+                return "☆☆☆☆☆";
+            default:
+                return "☆☆☆";
+        }
+    }
+    
+    
+    // create search method to save into database the criteria ONLY and to call the appropriate APIs for search sites
+    public static void search(String searchTerm, String cityOrZip, String rating, int distance, int price, ArrayList<String> listOfFilters) throws Exception
+    {
+        int r = getRating(rating);
+        for(String searchFilterName: listOfFilters)
+        {
+            switch(searchFilterName)
+            {
+                case "yelp":
+                    testYelp(searchTerm, cityOrZip, r, price, distance);
+                    break;
+                    
+                case "foursquare":
+                    testFoursquare(searchTerm, cityOrZip);
+                    break;
+                    
+                
+                case "google":
+                    testGoogle(searchTerm, cityOrZip, r);
+                    break;
+            }
+            
+            // store general search or user search
+        }
+        
+        
     }
     
     
@@ -545,24 +616,86 @@ public class testhttp
             break;
             
             default:
-            priceRange = 2;
+            priceRange = 1;
         }
         
-        /*System.out.println("Enter a radius: ");
+        System.out.println("Enter a radius in miles: ");
         String r = scanner.nextLine();
-        try
-        {
-            int radius = Integer.parseInt(r);
-        }
-        catch(NumberFormatException nfe)
-        {
-            System.out.println("You didn't enter a number");
-        }*/
-        System.out.println("Filter by rating: ");
-        int rating = scanner.nextInt();
-        testYelp(term, location, rating);
         
-        //testFoursquare(term, location);
-        //testGoogle(term, location);
+        int radius = 0;
+        switch(r)
+        {
+            case "1":
+            radius = 1;
+            break;
+            
+            case "2":
+            radius = 2;
+            break;
+            
+            case "3":
+            radius = 3;
+            break;
+            
+            case "4":
+            radius = 4;
+            break;
+            
+            case "5":
+            radius = 5;
+            break;
+            
+            default:
+            radius = 3;
+        }
+        
+        
+        System.out.println("Filter by rating: ");
+        String ratingNum = scanner.nextLine();
+        int rating;
+        switch(ratingNum)
+        {
+            case "1":
+            rating = 1;
+            break;
+            
+            case "2":
+            rating = 2;
+            break;
+            
+            case "3":
+            rating = 3;
+            break;
+            
+            case "4":
+            rating = 4;
+            break;
+            
+            case "5":
+            rating = 5;
+            break;
+            
+            default:
+            rating = 3;
+        }
+        ArrayList<String> listOfFilters = new ArrayList<String>();
+        
+        for(int i = 0; i < 3; i++)
+        {
+            System.out.println("Enter a list of filters: ");
+            String filter = scanner.nextLine();
+            if(filter.equals(""))
+            {
+                System.out.println("You didn't enter anything");
+            }
+            else
+            {
+                filter.toLowerCase();
+                listOfFilters.add(filter);
+            }
+            
+        }
+        search(term, location, getStar(rating), radius, priceRange, listOfFilters);
+        
     }
 }
