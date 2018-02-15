@@ -36,6 +36,8 @@ import java.sql.*;
 public class searchScreen extends Application
 {
 	private String rating = "";
+	int priceRange = 0;
+	int distance = 0;
     // instance variables - replace the example below with your own
 	private static testhttp test = new testhttp();
     SearchDAO db = new SearchDAO();
@@ -59,7 +61,7 @@ public class searchScreen extends Application
         gp.add(title, 0, 0);
         
         // Price
-        MenuButton price = new MenuButton("Price");
+        MenuButton price = new MenuButton("Select Price Range");
         price.setMinWidth(100);
         price.setMaxWidth(100);
         MenuItem price1 = new MenuItem("$");
@@ -81,6 +83,23 @@ public class searchScreen extends Application
             db.setPrice(price3.getText());
             price.setText(price3.getText());
         });
+        
+        switch(price.getText())
+        {
+        	case ("$"):
+        		priceRange = 1;
+        		break;
+        	case ("$$"):
+        		priceRange = 2;
+        		break;
+        	case ("$$$"):
+        		priceRange = 3;
+        		break;
+        	
+        	default:
+        		priceRange = 1;	
+        }
+        
         price.getItems().addAll(price1, price2, price3);
         price.setTranslateX(300);
         price.setTranslateY(300);
@@ -130,7 +149,28 @@ public class searchScreen extends Application
             ratingMenu.setText(fiveStar.getText());
         });
         
-        if(ratingMenu.getText() == "☆")
+       switch(ratingMenu.getText())
+       {
+       	case ("☆"):
+       		rating = "1";
+       		break;
+       	case ("☆☆"):
+       		rating = "2";
+       		break;
+       	case ("☆☆☆"):
+       		rating = "3";
+       		break;
+       	case ("☆☆☆☆"):
+       		rating = "4";
+       		break;
+       	case ("☆☆☆☆☆"):
+       		rating = "5";
+       		break;
+       	default:
+       		rating = "3";	
+       }
+       
+       /* if(ratingMenu.getText() == "☆")
         {
         		rating = "1";
         }
@@ -153,7 +193,7 @@ public class searchScreen extends Application
         if(ratingMenu.getText() == "☆☆☆☆☆")
         {
         		rating = "5";
-        }
+        }*/
         
         Button update = new Button("Update Profile");
         update.setTranslateX(425);
@@ -221,7 +261,29 @@ public class searchScreen extends Application
         distanceMenu.getItems().addAll(mile5, mile10, mile25, mile50, mile100);
         distanceMenu.setTranslateX(115);
         distanceMenu.setTranslateY(300);
-        String str = distanceMenu.getText().replaceAll("[^\\d.]", "");
+        //int distanceInt = Integer.parseInt(distanceMenu.getText().replaceAll("[^\\d.]", ""));
+        switch(distanceMenu.getText())
+        {
+        		case "5 miles":
+        			distance = 5;
+        			break;
+        		case "10 miles":
+        			distance = 10;
+        			break;
+        		case "25 miles":
+        			distance = 25;
+        			break;
+        		case "50 miles":
+        			distance = 50;
+        			break;
+        		case "100 miles":
+        			distance = 100;
+        			break;
+        		default:
+        			distance = 5;
+    
+        }
+        
         gp.add(distanceMenu,0,0);
         
         Label distanceLabel = new Label("Distance");
@@ -260,7 +322,7 @@ public class searchScreen extends Application
         usernameLogin.setTranslateY(40);
         gp.add(usernameLogin, 0, 0);
         
-        Button login = new Button("Login");
+        Button login = new Button("Login / Enroll");
         login.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent ae)
@@ -558,6 +620,7 @@ public class searchScreen extends Application
                         {
                             public void handle(ActionEvent ae)
                             {
+                            		
                                 db.setUsername(tf.getText());
                                 db.setPassword(pwBox.getText());
                                 db.setFirstName(tf2.getText());
@@ -630,8 +693,9 @@ public class searchScreen extends Application
                 {
                     if(yelp.isSelected())
                     {
-                    	   filter.add(yelp.getText());
-                        db.storeFilter(yelp.getText());
+                    	   
+                    	   filter.add(yelp.getText().toLowerCase());
+                        db.storeFilter(yelp.getText().toLowerCase());
                         System.out.println("Yelp selected");
                     }
                     else
@@ -652,8 +716,9 @@ public class searchScreen extends Application
                 {
                     if(tripAdvisor.isSelected())
                     {
-                    		filter.add(tripAdvisor.getText());
-                        db.storeFilter(tripAdvisor.getText());
+                    	    
+                    		filter.add(tripAdvisor.getText().toLowerCase());
+                        db.storeFilter(tripAdvisor.getText().toLowerCase());
                         System.out.println("tripAdvisor selected");
                     }
                     else
@@ -674,13 +739,14 @@ public class searchScreen extends Application
                 {
                     if(googlePlaces.isSelected())
                     {
-                    		filter.add(googlePlaces.getText());
-                        db.storeFilter(googlePlaces.getText());
+                    		
+                    		filter.add(googlePlaces.getText().toLowerCase());
+                        db.storeFilter(googlePlaces.getText().toLowerCase());
                         System.out.println("Google Places selected");
                     }
                     else
                     {
-                    		filter.remove(googlePlaces.getText());
+                    	    filter.remove(googlePlaces.getText());
                         db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
                         System.out.println("Google Places unselected");
                     }
@@ -697,8 +763,9 @@ public class searchScreen extends Application
                 {
                     if(foursquare.isSelected())
                     {
-                    		filter.add(foursquare.getText());
-                        db.storeFilter(foursquare.getText());
+                    		
+                    		filter.add(foursquare.getText().toLowerCase());
+                        db.storeFilter(foursquare.getText().toLowerCase());
                         System.out.println("Foursquare selected");
                     }
                     else
@@ -712,6 +779,11 @@ public class searchScreen extends Application
                 }
         }
         );
+        
+        for(String item: filter)
+        {
+        		System.out.println(item);
+        }
         
         yelp.setTranslateX(-250);
         yelp.setTranslateY(375);
@@ -739,8 +811,9 @@ public class searchScreen extends Application
             	   		try
             	   		{		
             	   				System.out.println(searchField.getText());
+            	   				System.out.println(zipCodeOrCity.getText());
             	   				//test.search(searchField.getText(), zipCodeOrCity.getText(), Integer.toString(test.getRating(ratingMenu.getText())), Integer.parseInt(str), test.getPrice(price.getText()), filter);
-            	 
+            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filter);
             	   				//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), test.getRating(ratingMenu.getText()), filter, price.getText());
             	   		}
             	   		catch(Exception e)
