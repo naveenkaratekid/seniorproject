@@ -3,7 +3,7 @@ import javafx.event.*;
 import javafx.geometry.*;
 import javafx.beans.value.*;
 import javafx.util.*;
-
+import okhttp3.Address;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -37,28 +37,26 @@ public class searchScreen extends Application
 {
 	private String rating = "";
     // instance variables - replace the example below with your own
+	private static testhttp test = new testhttp();
     SearchDAO db = new SearchDAO();
     public void start(Stage s)
     { 
     		
         GridPane gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
-        gp.setHgap(20);
-        gp.setVgap(20);
-        gp.setPadding(new Insets(25,25,25,25));
        
     
         Button searchButton = new Button("Search");
         
-        searchButton.setTranslateX(325);
-        searchButton.setTranslateY(180);
+        searchButton.setTranslateX(100);
+        searchButton.setTranslateY(175);
         gp.add(searchButton, 0,0);
         
-        Text t = new Text("Mixed Reviews");
-        t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-        t.setTranslateX(75);
-        t.setTranslateY(0);
-        gp.add(t, 0, 0);
+        Text title = new Text("Mixed Reviews");
+        title.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+        title.setTranslateX(75);
+        title.setTranslateY(50);
+        gp.add(title, 0, 0);
         
         // Price
         MenuButton price = new MenuButton("Price");
@@ -85,102 +83,102 @@ public class searchScreen extends Application
         });
         price.getItems().addAll(price1, price2, price3);
         price.setTranslateX(300);
-        price.setTranslateY(200);
+        price.setTranslateY(300);
         gp.add(price, 0,0);
         Label priceLabel = new Label("Price");
         priceLabel.setTranslateX(260);
-        priceLabel.setTranslateY(200);
+        priceLabel.setTranslateY(300);
         gp.add(priceLabel,0,0);
         
         // Rating
-        MenuButton mb = new MenuButton("Rating");
-        mb.setMinWidth(100);
-        mb.setMaxWidth(100);
-        MenuItem m1 = new MenuItem("☆");
+        MenuButton ratingMenu = new MenuButton("Rating");
+        ratingMenu.setMinWidth(100);
+        ratingMenu.setMaxWidth(100);
+        MenuItem oneStar = new MenuItem("☆");
         // I'm gonna use lamba for the fun of it
-        m1.setOnAction(event -> 
+        oneStar.setOnAction(event -> 
         {
-            db.setRating(m1.getText());
-            mb.setText(m1.getText());
+            db.setRating(oneStar.getText());
+            ratingMenu.setText(oneStar.getText());
         });
         
-        MenuItem m2 = new MenuItem("☆☆");
-        m2.setOnAction(event -> 
+        MenuItem twoStar = new MenuItem("☆☆");
+        twoStar.setOnAction(event -> 
         {
-            db.setRating(m2.getText());
-            mb.setText(m2.getText());
+            db.setRating(twoStar.getText());
+            ratingMenu.setText(twoStar.getText());
         });
         
-        MenuItem m3 = new MenuItem("☆☆☆");
-        m3.setOnAction(event -> 
+        MenuItem threeStar = new MenuItem("☆☆☆");
+        threeStar.setOnAction(event -> 
         {
-            db.setRating(m3.getText());
-            mb.setText(m3.getText());
+            db.setRating(threeStar.getText());
+            ratingMenu.setText(threeStar.getText());
         });
         
-        MenuItem m4 = new MenuItem("☆☆☆☆");
-        m4.setOnAction(event -> 
+        MenuItem fourStar = new MenuItem("☆☆☆☆");
+        fourStar.setOnAction(event -> 
         {
-            db.setRating(m4.getText());
-            mb.setText(m4.getText());
+            db.setRating(fourStar.getText());
+            ratingMenu.setText(fourStar.getText());
         });
        
-        MenuItem m5 = new MenuItem("☆☆☆☆☆");
-        m5.setOnAction(event -> 
+        MenuItem fiveStar = new MenuItem("☆☆☆☆☆");
+        fiveStar.setOnAction(event -> 
         {
-            db.setRating(m5.getText());
-            mb.setText(m5.getText());
+            db.setRating(fiveStar.getText());
+            ratingMenu.setText(fiveStar.getText());
         });
         
-        if(mb.getText() == "☆")
+        if(ratingMenu.getText() == "☆")
         {
         		rating = "1";
         }
         
-        if(mb.getText() == "☆☆")
+        if(ratingMenu.getText() == "☆☆")
         {
         		rating = "2";
         }
         
-        if(mb.getText() == "☆☆☆")
+        if(ratingMenu.getText() == "☆☆☆")
         {
         		rating = "3";
         }
         
-        if(mb.getText() == "☆☆☆☆")
+        if(ratingMenu.getText() == "☆☆☆☆")
         {
         		rating = "4";
         }
         
-        if(mb.getText() == "☆☆☆☆☆")
+        if(ratingMenu.getText() == "☆☆☆☆☆")
         {
         		rating = "5";
         }
         
         Button update = new Button("Update Profile");
-        update.setTranslateX(300);
-        update.setTranslateY(0);
+        update.setTranslateX(425);
+        update.setTranslateY(20);
         update.setVisible(false);
         
         gp.add(update, 0, 0);
         
-        mb.getItems().addAll(m1, m2, m3, m4, m5);
-        mb.setTranslateX(-100);
-        mb.setTranslateY(200);
-        gp.add(mb,0,0);
+        ratingMenu.getItems().addAll(oneStar, twoStar, threeStar, fourStar, fiveStar);
+        ratingMenu.setTranslateX(-100);
+        ratingMenu.setTranslateY(300);
+        gp.add(ratingMenu,0,0);
         
         Label ratingLabel = new Label("Rating");
         ratingLabel.setTranslateX(-150);
-        ratingLabel.setTranslateY(200);
+        ratingLabel.setTranslateY(300);
         gp.add(ratingLabel,0,0);
         
         // Distance
-        MenuButton mb2 = new MenuButton("Distance");
+        MenuButton distanceMenu = new MenuButton("Distance");
         MenuItem mile5 = new MenuItem("5 miles");
         mile5.setOnAction(event -> 
         {
             String str = mile5.getText().replaceAll("[^\\d.]", ""); // truncate non numeric characters
-            mb2.setText(mile5.getText());
+            distanceMenu.setText(mile5.getText());
             db.setDistance(Integer.parseInt(str));
             
         });
@@ -189,7 +187,7 @@ public class searchScreen extends Application
         mile10.setOnAction(event -> 
         {
             String str = mile10.getText().replaceAll("[^\\d.]", "");
-            mb2.setText(mile10.getText());
+            distanceMenu.setText(mile10.getText());
             db.setDistance(Integer.parseInt(str));
             
         });
@@ -198,7 +196,7 @@ public class searchScreen extends Application
         mile25.setOnAction(event -> 
         {
             String str = mile25.getText().replaceAll("[^\\d.]", "");
-            mb2.setText(mile25.getText());
+            distanceMenu.setText(mile25.getText());
             db.setDistance(Integer.parseInt(str));
             
         });
@@ -207,7 +205,7 @@ public class searchScreen extends Application
         mile50.setOnAction(event -> 
         {
             String str = mile50.getText().replaceAll("[^\\d.]", "");
-            mb2.setText(mile50.getText());
+            distanceMenu.setText(mile50.getText());
             db.setDistance(Integer.parseInt(str));
             
         });
@@ -216,49 +214,50 @@ public class searchScreen extends Application
         mile100.setOnAction(event -> 
         {
             String str = mile100.getText().replaceAll("[^\\d.]", "");
-            mb2.setText(mile100.getText());
+            distanceMenu.setText(mile100.getText());
             db.setDistance(Integer.parseInt(str));
             
         });
-        mb2.getItems().addAll(mile5, mile10, mile25, mile50, mile100);
-        mb2.setTranslateX(115);
-        mb2.setTranslateY(200);
-        gp.add(mb2,0,0);
+        distanceMenu.getItems().addAll(mile5, mile10, mile25, mile50, mile100);
+        distanceMenu.setTranslateX(115);
+        distanceMenu.setTranslateY(300);
+        String str = distanceMenu.getText().replaceAll("[^\\d.]", "");
+        gp.add(distanceMenu,0,0);
         
         Label distanceLabel = new Label("Distance");
         distanceLabel.setTranslateX(50);
-        distanceLabel.setTranslateY(200);
+        distanceLabel.setTranslateY(300);
         gp.add(distanceLabel,0,0);
         
         Label searchLabel = new Label("Search");
         searchLabel.setTranslateX(-250);
-        searchLabel.setTranslateY(82);
+        searchLabel.setTranslateY(125);
         gp.add(searchLabel,0, 0);
         
-        TextField tf = new TextField();
-        tf.setPromptText("Search for a place or category");
-        tf.setMaxWidth(300);
-        tf.setMinWidth(300);
-        tf.setTranslateX(-200);
-        tf.setTranslateY(82);
-        gp.add(tf, 0, 0);
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search for a place or category");
+        searchField.setMaxWidth(300);
+        searchField.setMinWidth(300);
+        searchField.setTranslateX(-200);
+        searchField.setTranslateY(125);
+        gp.add(searchField, 0, 0);
         
         
         Label zipOrCity = new Label("City or Zip");
         zipOrCity.setTranslateX(130);
-        zipOrCity.setTranslateY(82);
+        zipOrCity.setTranslateY(125);
         gp.add(zipOrCity, 0, 0); 
         
         TextField zipCodeOrCity = new TextField();
         zipCodeOrCity.setPromptText("City or ZIP");
         zipCodeOrCity.setTranslateX(200);
-        zipCodeOrCity.setTranslateY(82);
+        zipCodeOrCity.setTranslateY(125);
         gp.add(zipCodeOrCity, 0, 0);
         
         Text usernameLogin = new Text(); // displays user name
         usernameLogin.setText("Not Logged In");
         usernameLogin.setTranslateX(300);
-        usernameLogin.setTranslateY(-20);
+        usernameLogin.setTranslateY(40);
         gp.add(usernameLogin, 0, 0);
         
         Button login = new Button("Login");
@@ -275,20 +274,20 @@ public class searchScreen extends Application
                 gp.setPadding(new Insets(25,25,25,25));
                 
                 
-                Text t = new Text("Login Page");
-                t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-                gp.add(t,0,0,2,1);
+                Text loginPageText = new Text("Login Page");
+                loginPageText.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+                gp.add(loginPageText,0,0,2,1);
                 
                 Label searchBox = new Label("Username");
                 gp.add(searchBox,0, 1);
                 
-                TextField tf = new TextField();
-                tf.setPromptText("Username");
-                gp.add(tf, 1,1);
+                TextField username = new TextField();
+                username.setPromptText("Username");
+                gp.add(username, 1,1);
                 
-                TextField tf1 = new TextField();
+                TextField password = new TextField();
                 Label pw = new Label("Password");
-                tf1.setPromptText("Password");
+                password.setPromptText("Password");
                 gp.add(pw, 0,2);
                 
                 PasswordField pwBox = new PasswordField();
@@ -297,14 +296,14 @@ public class searchScreen extends Application
                 Text invalidUserName = new Text();
                 
                 Button login = new Button("Login");
-                login.setTranslateX(200);
+                login.setTranslateX(250);
                 login.setTranslateY(10);
                 login.setOnAction(new EventHandler<ActionEvent>()
                 {
                     public void handle(ActionEvent ae)
                     {
                         
-                        String data = db.getUserProfile(tf.getText(), pwBox.getText());
+                        String data = db.getUserProfile(username.getText(), pwBox.getText());
                         if(data != null)
                         {
                         	   usernameLogin.setText(data);
@@ -313,8 +312,8 @@ public class searchScreen extends Application
                 			   {
                         		   public void handle(ActionEvent ae)
                         		   {
-                        			   System.out.println(tf.getText());
-                        			   userProfile up = db.getUserProfileDetails(tf.getText());
+                        			   System.out.println(username.getText());
+                        			   userProfile up = db.getUserProfileDetails(username.getText());
                         			   Stage s2 = new Stage();
                         			   s2.setResizable(false);
                                     s2.setTitle("Update Profile");
@@ -323,27 +322,27 @@ public class searchScreen extends Application
                                     gp.setHgap(20);
                                     gp.setVgap(20);
                                     gp.setPadding(new Insets(25,25,25,25));
-                                    Text t = new Text("Update Profile");
-                                    t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-                                    gp.add(t,0,0,2,1);
+                                    Text updateProfileText = new Text("Update Profile");
+                                    updateProfileText.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+                                    gp.add(updateProfileText,0,0,2,1);
                                     
                                     PasswordField pw = new PasswordField(); // password
                                     pw.setText(up.getPassword());
                                     
-                                    TextField tf2 = new TextField(); // first name
-                                    tf2.setText(up.getFirstName());
+                                    TextField firstNameField = new TextField(); // first name
+                                    firstNameField.setText(up.getFirstName());
                                    
-                                    TextField tf3 = new TextField(); // last name
-                                    tf3.setText(up.getLastName());
+                                    TextField lastNameField = new TextField(); // last name
+                                    lastNameField.setText(up.getLastName());
                                     
-                                    TextField tf4 = new TextField(); // zipcode
-                                    tf4.setText(Integer.toString(up.getZipcode()));
+                                    TextField zipcodeField = new TextField(); // zipcode
+                                    zipcodeField.setText(Integer.toString(up.getZipcode()));
                                     
-                                    TextField tf5 = new TextField(); // email
-                                    tf5.setText(up.getEmail());
+                                    TextField emailField = new TextField(); // email
+                                    emailField.setText(up.getEmail());
                                     
-                                    TextField tf6 = new TextField(); // address
-                                    tf6.setText(up.getAddress());
+                                    TextField addressField = new TextField(); // address
+                                    addressField.setText(up.getAddress());
                                     
                                     
                                     Label password = new Label("Password");
@@ -352,27 +351,27 @@ public class searchScreen extends Application
                                     gp.add(password, 0,2);
                                     
                                     Label firstName = new Label("First Name");
-                                    tf2.setPromptText("First Name");
-                                    gp.add(tf2, 1,3);
+                                    firstNameField.setPromptText("First Name");
+                                    gp.add(firstNameField, 1,3);
                                     gp.add(firstName, 0,3);
                                     
                                     Label lastName = new Label("Last Name");
-                                    tf3.setPromptText("Last Name");
-                                    gp.add(tf3, 1,4);
+                                    lastNameField.setPromptText("Last Name");
+                                    gp.add(lastNameField, 1,4);
                                     gp.add(lastName, 0,4);
                                     
                                     Label zipcode = new Label("Zipcode");
-                                    tf4.setPromptText("Zipcode");
-                                    gp.add(tf4, 1,5);
+                                    zipcodeField.setPromptText("Zipcode");
+                                    gp.add(zipcodeField, 1,5);
                                     gp.add(zipcode, 0,5);
-                                    String code = tf4.getText();
+                                    String code = zipcodeField.getText();
 
                                     
                                     if(code.matches("[0-9]*") )
                                     {
-                                        if(tf4.getLength() > 5)
+                                        if(zipcodeField.getLength() > 5)
                                         {
-                                            Integer.parseInt(tf4.getText());
+                                            Integer.parseInt(zipcodeField.getText());
                                         }
                                     }
                                     else
@@ -381,13 +380,13 @@ public class searchScreen extends Application
                                     }
                                     
                                     Label email = new Label("Email");
-                                    tf5.setPromptText("Email Address");
-                                    gp.add(tf5, 1,6);
+                                    emailField.setPromptText("Email Address");
+                                    gp.add(emailField, 1,6);
                                     gp.add(email, 0,6);
                                     
                                     Label address = new Label("Address");
-                                    tf6.setPromptText("Home Address");
-                                    gp.add(tf6, 1,7);
+                                    addressField.setPromptText("Home Address");
+                                    gp.add(addressField, 1,7);
                                     gp.add(address, 0,7);
                                     
                                     Button update = new Button("Update");
@@ -399,18 +398,18 @@ public class searchScreen extends Application
                                     		public void handle(ActionEvent ae)
                                     		{
                                     			System.out.println("Password: " + pw.getText());
-                                    			db.setUsername(tf.getText());
-                                    			db.setFirstName(tf2.getText());
+                                    			db.setUsername(username.getText());
+                                    			db.setFirstName(firstNameField.getText());
                                     			db.setPassword(pw.getText());
-                                    			db.setLastName(tf3.getText());
-                                    			db.setZipcode(Integer.parseInt(tf4.getText()));
-                                    			db.setEmail(tf5.getText());
-                                    			db.setAddress(tf6.getText());
+                                    			db.setLastName(lastNameField.getText());
+                                    			db.setZipcode(Integer.parseInt(zipcodeField.getText()));
+                                    			db.setEmail(emailField.getText());
+                                    			db.setAddress(addressField.getText());
                                     			
                                     			try
                                     			{
                                     			    System.out.println("Updating");
-                                                db.updateUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pw.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
+                                                db.updateUserProfile(username.getText(), firstNameField.getText(), lastNameField.getText(), pw.getText(), Integer.parseInt(zipcodeField.getText()), emailField.getText(), addressField.getText());
                                                              
                                     			}
                                     			catch(Exception e)
@@ -619,7 +618,7 @@ public class searchScreen extends Application
         
        
         login.setTranslateX(315);
-        login.setTranslateY(35);
+        login.setTranslateY(75);
         gp.add(login, 0, 0);
         
         ArrayList<String> filter = new ArrayList<String>();
@@ -675,13 +674,13 @@ public class searchScreen extends Application
                 {
                     if(googlePlaces.isSelected())
                     {
-                    	filter.add(googlePlaces.getText());
+                    		filter.add(googlePlaces.getText());
                         db.storeFilter(googlePlaces.getText());
                         System.out.println("Google Places selected");
                     }
                     else
                     {
-                    	filter.remove(googlePlaces.getText());
+                    		filter.remove(googlePlaces.getText());
                         db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
                         System.out.println("Google Places unselected");
                     }
@@ -706,7 +705,7 @@ public class searchScreen extends Application
                     {
                     		filter.remove(foursquare.getText());
                         db.storeFilter(foursquare.getText()).remove(foursquare.getText());
-                        //listOfFilters.remove(foursquare.getText());
+                        filter.remove(foursquare.getText());
                         System.out.println("Foursquare unselected");
                     }
                     
@@ -730,7 +729,7 @@ public class searchScreen extends Application
         gp.add(tripAdvisor, 0, 0);
         gp.add(googlePlaces, 0, 0);
         gp.add(foursquare, 0, 0);
-        
+       
         searchButton.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent ae)
@@ -738,8 +737,11 @@ public class searchScreen extends Application
                if(usernameLogin.getText() == "Not Logged In")
                {
             	   		try
-            	   		{
-            	   			db.storeGeneralSearch(tf.getText(), zipCodeOrCity.getText(), Integer.parseInt(rating), filter, price.getText());
+            	   		{		
+            	   				System.out.println(searchField.getText());
+            	   				//test.search(searchField.getText(), zipCodeOrCity.getText(), Integer.toString(test.getRating(ratingMenu.getText())), Integer.parseInt(str), test.getPrice(price.getText()), filter);
+            	 
+            	   				//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), test.getRating(ratingMenu.getText()), filter, price.getText());
             	   		}
             	   		catch(Exception e)
             	   		{
@@ -754,8 +756,8 @@ public class searchScreen extends Application
         VBox root = new VBox(10);
         //root.getStylesheets().add(this.getClass().getResource("searchButton.css").toExternalForm());
         
-
-        root.getChildren().addAll(searchButton, gp);
+        root.getChildren().add(gp);
+        //root.getChildren().addAll(searchButton, gp);
         
         s.setWidth(875);
         s.setHeight(500);
