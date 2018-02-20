@@ -1,3 +1,5 @@
+package com.cogswell.seniorproject;
+
 import java.sql.*;
 import java.util.Date;
 //import java.sql.Date;
@@ -17,6 +19,14 @@ public class SearchDAO
 	private static String rating;
 	private static String price;
 	private static Date date;
+	private static String insertIntoResult = "insert into userSearch values ('?');";
+	private static String insertIntoPopularSearch = "insert into userSearch values ('?');";
+	private static String selectFromUserProfile = "select * from userProfile where username = '?'";
+	private static String insertIntoUserSearch = "insert into userSearch values ('?', '?', '?', ? ,'?', '?', '?')";
+	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";
+	private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
+	private static String insertIntoUserProfile = "insert into userProfile (username, firstName, lastName, password, zipcode, email, address) values (?, ?, ?, ?, ?, ?, ?);";
+	
 	/*private static DateFormat df = new SimpleDateFormat("MM/dd/yyyy h::mm a");
 	static String dateStr = df.format(date);*/
 	
@@ -67,7 +77,6 @@ public class SearchDAO
 	{
 		return firstName;
 	}
-
 
 
 	public static void setFirstName(String firstName) 
@@ -151,10 +160,11 @@ public class SearchDAO
     	try
 		{
             c1 = getConnection();
-            String insertIntoResult = "insert into userSearch values ('" + result + "');";
+            //String insertIntoResult = "insert into userSearch values ('" + result + "');";
             PreparedStatement ps = c1.prepareStatement(insertIntoResult);
-            //Statement s = c1.createStatement();
             
+            //Statement s = c1.createStatement();
+      
             
             int rs = ps.executeUpdate(insertIntoResult);
             //int rs = s.executeUpdate(insertIntoUserProfile);
@@ -182,8 +192,9 @@ public class SearchDAO
     		{
     			    //date = dateStr;
                 c1 = getConnection();
-                String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "', '" + date + "');";
+                //String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "', '" + date + "');";
                 PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
+                
                 //Statement s = c1.createStatement();
                 
                 
@@ -202,7 +213,7 @@ public class SearchDAO
     	try
 		{
             c1 = getConnection();
-            String insertIntoPopularSearch = "insert into userSearch values ('" + search + "');";
+            String insertIntoPopularSearch = "insert into popularSearch values ('" + search + "');";
             PreparedStatement ps = c1.prepareStatement(insertIntoPopularSearch);
             //Statement s = c1.createStatement();
             
@@ -219,7 +230,7 @@ public class SearchDAO
     }
     
     
-    public static userProfile getUserProfileDetails(String username)
+    public static UserProfile getUserProfileDetails(String username)
     {
     	try
 		{
@@ -229,7 +240,7 @@ public class SearchDAO
             ResultSet rs = ps.executeQuery(selectFromUserProfile);
             if(rs.next())
 		    {
-            		userProfile up = new userProfile();
+            		UserProfile up = new UserProfile();
             		up.setFirstName(rs.getString(2));
             		
             		up.setLastName(rs.getString(3));
@@ -261,26 +272,42 @@ public class SearchDAO
     {
     		try
 		{
-    			System.out.println(username);
+    			/*System.out.println(username);
     			System.out.println(firstName);
     			System.out.println(lastName);
     			System.out.println(password);
     			System.out.println(zipcode);
     			System.out.println(email);
-    			System.out.println(address);
+    			System.out.println(address);*/
+    			
             c1 = getConnection();
-            String insertIntoUserProfile = "update userProfile set firstname = '" + firstName + "', lastName = '" + lastName + "', password = '" + password + "', zipcode = " + zipcode + ", email = '" + email + "', address = '" + address + "' where username = '" + username + "';";
-            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
-            //Statement s = c1.createStatement();
-            System.out.println(insertIntoUserProfile);
+            PreparedStatement ps = c1.prepareStatement(updateUserProfile, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, username);
+            ps.setString(2, firstName);
+            ps.setString(3, lastName);
+            ps.setString(4, password);
+            ps.setInt(5, zipcode);
+            ps.setString(6,  email);
+            ps.setString(7, address);
+            ps.setString(8, username);
             
-            int rs = ps.executeUpdate(insertIntoUserProfile);
-            //int rs = s.executeUpdate(insertIntoUserProfile);
+            System.out.println(ps);
+            
+            try
+            {
+            		ps.executeUpdate();
+            }
+            catch(Exception e)
+            {
+            	
+            }
+            
+     
            
 		}
 		catch(Exception e)
 		{
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
     }
     
@@ -299,7 +326,7 @@ public class SearchDAO
             
             
             int rs = ps.executeUpdate(insertIntoUserSearch);
-            //int rs = s.executeUpdate(insertIntoUserProfile);
+            
            
 		}
 		catch(Exception e)
@@ -313,15 +340,21 @@ public class SearchDAO
     {
         try
         {
-        		int i = 0; // ID
+        			
             c1 = getConnection();
-            String insertIntoUserProfile = "insert into userProfile values ('" + username + "', '" + firstName + "', '" + lastName + "', '" + password + "', " + zipcode + ", '" + email + "', '" + address + "'," + i + ");";
-           // PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
-            Statement s = c1.createStatement();
+            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+            ps.setString(1, username);
+            ps.setString(2, firstName);
+            ps.setString(3, lastName);
+            ps.setString(4, password);
+            ps.setInt(5, zipcode);
+            ps.setString(6,  email);
+            ps.setString(7, address);
+            System.out.println(ps);
             
             try
             {
-            	 int rs = s.executeUpdate(insertIntoUserProfile);
+            	 ps.executeUpdate();
             	 
             }
             catch(MySQLIntegrityConstraintViolationException me)
@@ -329,8 +362,6 @@ public class SearchDAO
             		throw new Exception("This account already exists");
             }
             
-            
-            i++;
         }
         catch(Exception e)
         {
