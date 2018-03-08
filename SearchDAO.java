@@ -11,14 +11,14 @@ public class SearchDAO
 {
     // instance variables - replace the example below with your own
 	private static List<String> listOfFilteredSites;
-	private static String dr = "com.mysql.jdbc.Driver", url = "jdbc:mysql://localhost:3306/test";
+	private static String dr = "com.mysql.jdbc.Driver", url = "jdbc:mysql://localhost:3306/test?characterEncoding=UTF-8";
     private static String name = "root", pwd = "39808";
 	private static Connection c1;
 	private static String username, firstName, lastName, password, email, address;
 	private static int zipcode, distance;
 	private static String rating;
 	private static String price;
-	private static Date date;
+	private static Date date = new Date();
 	private static String insertIntoResult = "insert into userSearch values ('?');";
 	private static String insertIntoPopularSearch = "insert into userSearch values ('?');";
 	private static String selectFromUserProfile = "select * from userProfile where username = '?'";
@@ -26,9 +26,10 @@ public class SearchDAO
 	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";
 	private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
 	private static String insertIntoUserProfile = "insert into userProfile (username, firstName, lastName, password, zipcode, email, address) values (?, ?, ?, ?, ?, ?, ?);";
-	
-	/*private static DateFormat df = new SimpleDateFormat("MM/dd/yyyy h::mm a");
-	static String dateStr = df.format(date);*/
+	private static String insertIntoGeneralSearch = "insert into generalSearch (name, rating, siteName, distance, city, price) values (?, ?, ?, ?, ?, ?)";
+
+	private static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+	static String dateStr = df.format(date);
 	
 	public static Date getDate() {
 		return date;
@@ -194,12 +195,18 @@ public class SearchDAO
                 c1 = getConnection();
                 //String insertIntoUserSearch = "insert into userSearch values ('" + username + "', '" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "', '" + date + "');";
                 PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
+                ps.setString(1, username);
+                ps.setString(2, searchName);
+                ps.setString(3, zipcodeOrCity);
+                ps.setInt(4, rating);
+                ps.setString(5, listOfFilters.toString());
                 
-                //Statement s = c1.createStatement();
                 
                 
-                int rs = ps.executeUpdate(insertIntoUserSearch);
-                //int rs = s.executeUpdate(insertIntoUserProfile);
+                
+                
+                
+                int rs = ps.executeUpdate();
                
     		}
     		catch(Exception e)
@@ -272,13 +279,6 @@ public class SearchDAO
     {
     		try
 		{
-    			/*System.out.println(username);
-    			System.out.println(firstName);
-    			System.out.println(lastName);
-    			System.out.println(password);
-    			System.out.println(zipcode);
-    			System.out.println(email);
-    			System.out.println(address);*/
     			
             c1 = getConnection();
             PreparedStatement ps = c1.prepareStatement(updateUserProfile, Statement.RETURN_GENERATED_KEYS);
@@ -315,23 +315,39 @@ public class SearchDAO
      *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
      */
     
-    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int rating, ArrayList<String> listOfFilters, String price) throws Exception
+    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int distance, String rating, ArrayList<String> listOfFilters, String price) throws Exception
     {
     	try
 		{
+    			System.out.println("Rating is: " + rating);
+    			char c = '★';
+    			String s1r = "★★★★★";
             c1 = getConnection();
-            String insertIntoUserSearch = "insert into generalSearch values ('" + searchName + "', '" + zipcodeOrCity + "', " + rating + " ,'" + listOfFilters.toString() + ", '" + price + "');";
-            PreparedStatement ps = c1.prepareStatement(insertIntoUserSearch);
-            //Statement s = c1.createStatement();
+            PreparedStatement ps = c1.prepareStatement(insertIntoGeneralSearch);
+            ps.setString(1, searchName);
+            ps.setString(2, s1r);
             
+            ps.setString(3, listOfFilters.toString());
+            ps.setInt(4, distance);
+            ps.setString(5, zipcodeOrCity);
+            ps.setString(6, price);
             
-            int rs = ps.executeUpdate(insertIntoUserSearch);
+            System.out.println(ps);
             
-           
+            try
+            {
+            		ps.execute();
+            }
+            catch(Exception e)
+            {
+            		e.printStackTrace();
+            }
+            
+                
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}
     }
     
@@ -354,7 +370,7 @@ public class SearchDAO
             
             try
             {
-            	 ps.executeUpdate();
+            	 ps.execute();
             	 
             }
             catch(MySQLIntegrityConstraintViolationException me)
@@ -465,6 +481,7 @@ public class SearchDAO
     
     public static void main(String[] args) throws Exception
     {
+    		System.out.println(dateStr);
         getConnection();
     }
 }

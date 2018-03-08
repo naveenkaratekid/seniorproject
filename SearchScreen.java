@@ -4,29 +4,17 @@ import javafx.application.*;
 import javafx.event.*;
 import javafx.geometry.*;
 import javafx.beans.value.*;
-//import javafx.util.*;
-//import okhttp3.Address;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-//import javafx.scene.input.*;
-//import javafx.scene.control.TabPane.*;
-//import javafx.scene.shape.*;
-//import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.*;
-//import javafx.scene.media.*;
-//import javafx.animation.*;
-//import javafx.scene.control.cell.*;
 import javafx.scene.image.*;
-//import java.io.File;
 import java.util.*;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
-
-import java.io.FilenameFilter;
 import javafx.stage.*;
-
-import java.sql.*;
-
+ // API: Application Programming Interface: Set of routines and definitions for building app software
+// JSON: Java Script Object Notation
 /**
  * Write a description of class searchScreen here.
  * 
@@ -36,16 +24,18 @@ import java.sql.*;
 @SuppressWarnings("unchecked")
 public class SearchScreen extends Application
 {
-	private String rating = "";
+	private static int rating = 0;
+	GridPane gp;
 	int priceRange = 0;
 	int distance = 0;
     // instance variables - replace the example below with your own
 	private static TestHttp test = new TestHttp();
     SearchDAO db = new SearchDAO();
+    
     public void start(Stage s)
     { 
     		
-        GridPane gp = new GridPane();
+        gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
        
     
@@ -66,6 +56,10 @@ public class SearchScreen extends Application
         price.setMinWidth(200);
         price.setMaxWidth(100);
         MenuItem price1 = new MenuItem("$");
+        price1.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #008000;\n" + 
+        		"}");
         price1.setOnAction(event -> 
         {
             db.setPrice(price1.getText());
@@ -73,12 +67,20 @@ public class SearchScreen extends Application
         });
         
         MenuItem price2 = new MenuItem("$$");
+        price2.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #FFFF66;\n" + 
+        		"}");
         price2.setOnAction(event -> 
         {
             db.setPrice(price2.getText());
             price.setText(price2.getText());
         });
         MenuItem price3 = new MenuItem("$$$");
+        price3.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #FF0000;\n" + 
+        		"}");
         price3.setOnAction(event -> 
         {
             db.setPrice(price3.getText());
@@ -114,88 +116,95 @@ public class SearchScreen extends Application
         MenuButton ratingMenu = new MenuButton("Rating");
         ratingMenu.setMinWidth(100);
         ratingMenu.setMaxWidth(100);
-        MenuItem oneStar = new MenuItem("☆");
+        ratingMenu.setTextFill(Color.BLACK);
+        
+        MenuItem oneStar = new MenuItem("★");
+        oneStar.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #FF0000;\n" + 
+        		"}");
         // I'm gonna use lamba for the fun of it
         oneStar.setOnAction(event -> 
         {
             db.setRating(oneStar.getText());
             ratingMenu.setText(oneStar.getText());
+            ratingMenu.setTextFill(Color.RED);
+           
         });
-        
-        MenuItem twoStar = new MenuItem("☆☆");
+              
+        MenuItem twoStar = new MenuItem("★★");
+        twoStar.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #FF8000;\n" + 
+        		"}");
         twoStar.setOnAction(event -> 
         {
             db.setRating(twoStar.getText());
             ratingMenu.setText(twoStar.getText());
+            ratingMenu.setTextFill(Color.ORANGE);
+            
         });
         
-        MenuItem threeStar = new MenuItem("☆☆☆");
+        MenuItem threeStar = new MenuItem("★★★");
+        threeStar.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #FFFF66;\n" + 
+        		"}");
         threeStar.setOnAction(event -> 
         {
             db.setRating(threeStar.getText());
             ratingMenu.setText(threeStar.getText());
+            ratingMenu.setTextFill(Color.YELLOW);
+            
         });
-        
-        MenuItem fourStar = new MenuItem("☆☆☆☆");
+           
+        MenuItem fourStar = new MenuItem("★★★★");
+        fourStar.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #008000;\n" + 
+        		"}");
         fourStar.setOnAction(event -> 
         {
             db.setRating(fourStar.getText());
             ratingMenu.setText(fourStar.getText());
+            ratingMenu.setTextFill(Color.GREEN);
+            
         });
-       
-        MenuItem fiveStar = new MenuItem("☆☆☆☆☆");
+        
+        MenuItem fiveStar = new MenuItem("★★★★★");
+        fiveStar.setStyle(".menu-item .label {\n" + 
+        		"    -fx-padding: 0em 0em 0em 0em;\n" + 
+        		"    -fx-text-fill: #004080;\n" + 
+        		"}");
         fiveStar.setOnAction(event -> 
         {
             db.setRating(fiveStar.getText());
             ratingMenu.setText(fiveStar.getText());
+            ratingMenu.setTextFill(Color.DARKBLUE);
+            
         });
         
        switch(ratingMenu.getText())
        {
-       	case ("☆"):
-       		rating = "1";
+       	case ("★"):
+       		rating = 1;
        		break;
-       	case ("☆☆"):
-       		rating = "2";
+       	case ("★★"):
+       		rating = 2;
        		break;
-       	case ("☆☆☆"):
-       		rating = "3";
+       	case ("★★★"):
+       		rating = 3;
        		break;
-       	case ("☆☆☆☆"):
-       		rating = "4";
+       	case ("★★★★"):
+       		rating = 4;
        		break;
-       	case ("☆☆☆☆☆"):
-       		rating = "5";
+       	case ("★★★★★"):
+       		rating = 5;
        		break;
        	default:
-       		rating = "3";	
+       		rating = 3;	
        }
-       
-       /* if(ratingMenu.getText() == "☆")
-        {
-        		rating = "1";
-        }
-        
-        if(ratingMenu.getText() == "☆☆")
-        {
-        		rating = "2";
-        }
-        
-        if(ratingMenu.getText() == "☆☆☆")
-        {
-        		rating = "3";
-        }
-        
-        if(ratingMenu.getText() == "☆☆☆☆")
-        {
-        		rating = "4";
-        }
-        
-        if(ratingMenu.getText() == "☆☆☆☆☆")
-        {
-        		rating = "5";
-        }*/
-        
+
         Button update = new Button("Update Profile");
         update.setTranslateX(425);
         update.setTranslateY(20);
@@ -216,6 +225,7 @@ public class SearchScreen extends Application
         // Distance
         MenuButton distanceMenu = new MenuButton("Distance");
         MenuItem mile5 = new MenuItem("5 miles");
+        
         mile5.setOnAction(event -> 
         {
             String str = mile5.getText().replaceAll("[^\\d.]", ""); // truncate non numeric characters
@@ -452,15 +462,15 @@ public class SearchScreen extends Application
                                     gp.add(addressField, 1,7);
                                     gp.add(address, 0,7);
                                     
-                                    Button update = new Button("Update");
-                                    update.setTranslateX(175);
-                                    update.setTranslateY(-10);
-                                    gp.add(update, 0, 0);
-                                    update.setOnAction(new EventHandler<ActionEvent>()
+                                    Button updateProf = new Button("Update");
+                                    updateProf.setTranslateX(175);
+                                    updateProf.setTranslateY(-10);
+                                    gp.add(updateProf, 0, 0);
+                                    updateProf.setOnAction(new EventHandler<ActionEvent>()
                                 		{
                                     		public void handle(ActionEvent ae)
                                     		{
-                                    			System.out.println("Password: " + pw.getText());
+                                    			//System.out.println("Password: " + pw.getText());
                                     			db.setUsername(username.getText());
                                     			db.setFirstName(firstNameField.getText());
                                     			db.setPassword(pw.getText());
@@ -628,7 +638,6 @@ public class SearchScreen extends Application
                         {
                             public void handle(ActionEvent ae)
                             {
-                            		
                                 db.setUsername(tf.getText());
                                 db.setPassword(pwBox.getText());
                                 db.setFirstName(tf2.getText());
@@ -647,6 +656,19 @@ public class SearchScreen extends Application
                                 try
                                 {
                                         db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
+                                        usernameLogin.setText(tf2.getText() + " " + tf3.getText());
+                                        
+                                        String data = db.getUserProfile(tf.getText(), pwBox.getText());
+                                        System.out.println(tf.getText() + " " + pwBox.getText());
+                                        if(data != null)
+                                        {
+                                        	   usernameLogin.setText(data);
+                                        	   update.setVisible(true);
+                                        	   login.setVisible(false);
+
+                                     	   s1.close();
+                                        }
+                                        
                                         s2.close();
                                         s1.close();          
                                 }
@@ -833,8 +855,7 @@ public class SearchScreen extends Application
         gp.add(yelpView, 0, 0);
         gp.add(googleView, 0, 0);
         gp.add(foursquareView, 0, 0);
-        
-        
+
         searchButton.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent ae)
@@ -843,17 +864,33 @@ public class SearchScreen extends Application
                {
             	   		try
             	   		{		
-            	   				System.out.println(searchField.getText());
-            	   				System.out.println(zipCodeOrCity.getText());
-            	   				//test.search(searchField.getText(), zipCodeOrCity.getText(), Integer.toString(test.getRating(ratingMenu.getText())), Integer.parseInt(str), test.getPrice(price.getText()), filter);
-            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filter);
-            	   				//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), test.getRating(ratingMenu.getText()), filter, price.getText());
+            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filter);
+            	   				if(ratingMenu.getText() == "Rating")
+            	   				{
+            	   					ratingMenu.setText(test.getStar(rating));
+            	   					ratingMenu.setTextFill(Color.YELLOW);
+            	   				}
+            	   				db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), /*test.getRating(ratingMenu.getText()),*/ filter, test.getPriceSymbol(priceRange));
             	   		}
             	   		catch(Exception e)
             	   		{
             	   			e.printStackTrace();
             	   		}
             	   		
+               }
+               
+               else
+               {
+            	   		try
+            	   		{		
+            	   				System.out.println(searchField.getText());
+            	   				System.out.println(zipCodeOrCity.getText());
+            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filter);
+            	   		}
+            	   		catch(Exception e)
+            	   		{
+            	   			e.printStackTrace();
+            	   		}
                }
             }
         }
@@ -870,6 +907,7 @@ public class SearchScreen extends Application
         s.show();
         Scene scene = new Scene(root);
         s.setScene(scene);
+        
         
         
         // This piece of code will kill any running threads after the application is terminated
