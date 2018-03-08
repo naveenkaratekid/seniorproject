@@ -10,6 +10,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
+
 import java.util.*;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import javafx.stage.*;
@@ -724,10 +726,35 @@ public class SearchScreen extends Application
         
         ArrayList<String> filter = new ArrayList<String>();
         
-        CheckBox yelp = new CheckBox("Yelp"); //Users/Naveen/Desktop/docs/Senior Project/Mixed Reviews
+        CheckBox yelp = new CheckBox(); //Users/Naveen/Desktop/docs/Senior Project/Mixed Reviews
         Image yelpLogo = new Image((getClass().getResource("yelp.png")).toExternalForm());
         ImageView yelpView = new ImageView(yelpLogo);
-        yelp.selectedProperty().addListener(new ChangeListener<Boolean>() 
+        
+        yelpView.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            public void handle(MouseEvent me) 
+            {
+            		if(!yelp.isSelected())
+            		{
+            			yelp.setSelected(true);
+            			filter.add("Yelp".toLowerCase());
+            			//filter.add(yelp.getText().toLowerCase());
+            			//db.storeFilter(yelp.getText().toLowerCase());
+            			System.out.println("Yelp selected");
+            		}
+            		else
+            		{
+            			yelp.setSelected(false);
+            			filter.remove(yelp.getText());
+            			filter.remove("Yelp".toLowerCase());
+            			//db.storeFilter(yelp.getText()).remove(yelp.getText());
+            			System.out.println("Yelp unselected");
+            		}
+            }
+        }
+        );
+        
+        /*yelp.selectedProperty().addListener(new ChangeListener<Boolean>() 
         {
                 public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
                 {
@@ -747,8 +774,8 @@ public class SearchScreen extends Application
                     
                 }
         }
-        );
-        yelpView.setTranslateX(-310);
+        );*/
+        yelpView.setTranslateX(-350);
         yelpView.setTranslateY(370);
         
         
@@ -775,8 +802,8 @@ public class SearchScreen extends Application
         }
         );*/
         
-        CheckBox googlePlaces = new CheckBox("Google Places");
-        googlePlaces.selectedProperty().addListener(new ChangeListener<Boolean>() 
+        CheckBox googlePlaces = new CheckBox();
+        /*googlePlaces.selectedProperty().addListener(new ChangeListener<Boolean>() 
         {
                 public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
                 {
@@ -796,14 +823,39 @@ public class SearchScreen extends Application
                     
                 }
         }
-        );
+        );*/
         Image googleLogo = new Image((getClass().getResource("google.png")).toExternalForm());
-        ImageView googleView = new ImageView(googleLogo);
-        googleView.setTranslateX(125);
+        ImageView googleView = new ImageView(googleLogo);     
+        googleView.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            public void handle(MouseEvent me) 
+            {
+            		
+            		if(!googlePlaces.isSelected())
+            		{
+            			googlePlaces.setSelected(true);
+            			filter.add("Google Places".toLowerCase());
+            			//filter.add(googlePlaces.getText().toLowerCase());
+                    //db.storeFilter(googlePlaces.getText().toLowerCase());
+                    System.out.println("Google Places selected");
+                    
+            		}
+            		else
+            		{
+            			googlePlaces.setSelected(false);
+            			filter.remove("Google Places".toLowerCase());
+                    //db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
+                    System.out.println("Google Places unselected");
+            		}
+            }
+        }
+        );
+        
+        googleView.setTranslateX(75);
         googleView.setTranslateY(374);
         
-        CheckBox foursquare = new CheckBox("Foursquare");
-        foursquare.selectedProperty().addListener(new ChangeListener<Boolean>() 
+        CheckBox foursquare = new CheckBox();
+        /*foursquare.selectedProperty().addListener(new ChangeListener<Boolean>() 
         {
                 public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
                 {
@@ -824,10 +876,37 @@ public class SearchScreen extends Application
                     
                 }
         }
-        );
+        );*/
         Image foursquareLogo = new Image((getClass().getResource("foursquare.png")).toExternalForm());
         ImageView foursquareView = new ImageView(foursquareLogo);
-        foursquareView.setTranslateX(540);
+        
+        foursquareView.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+
+            public void handle(MouseEvent me) 
+            {
+            		
+            		if(!foursquare.isSelected())
+            		{
+            			foursquare.setSelected(true);
+            			//filter.add(foursquare.getText().toLowerCase());
+            			filter.add("Foursquare".toLowerCase());
+                    //db.storeFilter(foursquare.getText().toLowerCase());
+                    System.out.println("Foursquare selected");
+            		}
+            		else
+            		{
+            			foursquare.setSelected(false);
+            			//filter.remove(foursquare.getText());
+            			filter.remove("Foursquare".toLowerCase());
+                    //db.storeFilter(foursquare.getText()).remove(foursquare.getText());
+                    System.out.println("Foursquare unselected");
+            		}
+            }
+        }
+        );
+        
+        foursquareView.setTranslateX(460);
         foursquareView.setTranslateY(374);
         
         for(String item: filter)
@@ -841,7 +920,7 @@ public class SearchScreen extends Application
         //tripAdvisor.setTranslateX(-110);
         //tripAdvisor.setTranslateY(375);
         
-        googlePlaces.setTranslateX(0);
+        googlePlaces.setTranslateX(50);
         googlePlaces.setTranslateY(375);
         
         foursquare.setTranslateX(435);
