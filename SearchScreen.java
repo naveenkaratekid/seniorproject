@@ -12,6 +12,7 @@ import javafx.scene.text.*;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import javafx.stage.*;
@@ -40,7 +41,14 @@ public class SearchScreen extends Application
         gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
        
-    
+        Label clock = new Clock(); // using polymorphism
+        clock.setFont(new Font("Arial", 15));
+        clock.setVisible(true);
+        clock.setTextFill(Color.DODGERBLUE);
+        clock.setTranslateX(-315);
+        clock.setTranslateY(-50);
+        gp.add(clock, 0, 0);
+        
         Button searchButton = new Button("Search");
         
         searchButton.setTranslateX(100);
