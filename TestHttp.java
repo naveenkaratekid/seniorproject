@@ -193,18 +193,26 @@ public class TestHttp
             for(int i = 0; i < ja1.length(); i++)
             {
                 JSONObject jo1 = ja1.getJSONObject(i);
-                a = jo1.getInt("rating");
-                b = jo1.getString("place_id");
-                list.add(b);
                 
-                // create method that takes in the place ID and generate reviews
-                c = jo1.getString("name");
-                d = jo1.getString("formatted_address");
-                addressMap.put(d, list);
-                System.out.println("Average Rating: " + a + " " + getStar(a));
-                System.out.println("Place ID: "  + b);
-                System.out.println("Name: "  + c);
-                System.out.println("Address: "  + d);
+                try
+                {
+                    a = jo1.getInt("rating");
+                    b = jo1.getString("place_id");
+                    list.add(b);
+                    
+                    // create method that takes in the place ID and generate reviews
+                    c = jo1.getString("name");
+                    d = jo1.getString("formatted_address");
+                    addressMap.put(d, list);
+                    System.out.println("Average Rating: " + a + " " + getStar(a));
+                    System.out.println("Place ID: "  + b);
+                    System.out.println("Name: "  + c);
+                    System.out.println("Address: "  + d);
+                }
+                catch(Exception e)
+                {
+                    System.out.println("No information available");
+                }
                 System.out.println();
             }
         }
