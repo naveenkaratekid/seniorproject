@@ -3,7 +3,6 @@ package com.cogswell.seniorproject;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.geometry.*;
-import javafx.beans.value.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -35,6 +34,10 @@ public class SearchScreen extends Application
 	private static TestHttp test = new TestHttp();
     SearchDAO db = new SearchDAO();
     
+    private static Date date = new Date();
+    private static SimpleDateFormat df = new SimpleDateFormat("E MM-dd-yyyy h:mm:ss a");
+	static String dateStr = df.format(date);
+    
     public void start(Stage s)
     { 
     		
@@ -45,12 +48,11 @@ public class SearchScreen extends Application
         clock.setFont(new Font("Arial", 15));
         clock.setVisible(true);
         clock.setTextFill(Color.DODGERBLUE);
-        clock.setTranslateX(-315);
+        clock.setTranslateX(50);
         clock.setTranslateY(-50);
         gp.add(clock, 0, 0);
         
         Button searchButton = new Button("Search");
-        
         searchButton.setTranslateX(100);
         searchButton.setTranslateY(175);
         gp.add(searchButton, 0,0);
@@ -376,7 +378,7 @@ public class SearchScreen extends Application
                 PasswordField pwBox = new PasswordField();
                 gp.add(pwBox, 1,2);
                 
-                Text invalidUserName = new Text();
+                //Text invalidUserName = new Text();
                 
                 Button login = new Button("Login");
                 login.setTranslateX(250);
@@ -390,6 +392,7 @@ public class SearchScreen extends Application
                         if(data != null)
                         {
                         	   usernameLogin.setText(data);
+                        	   db.setUsername(username.getText());
                         	   update.setVisible(true);
                         	   update.setOnAction(new EventHandler<ActionEvent>()
                 			   {
@@ -942,11 +945,13 @@ public class SearchScreen extends Application
         gp.add(yelpView, 0, 0);
         gp.add(googleView, 0, 0);
         gp.add(foursquareView, 0, 0);
-
+        
+        
         searchButton.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent ae)
             {
+            		System.out.println(usernameLogin.getText());
                if(usernameLogin.getText() == "Not Logged In")
                {
             	   		try
@@ -957,22 +962,28 @@ public class SearchScreen extends Application
             	   					ratingMenu.setText(test.getStar(rating));
             	   					ratingMenu.setTextFill(Color.YELLOW);
             	   				}
-            	   				db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), /*test.getRating(ratingMenu.getText()),*/ filter, test.getPriceSymbol(priceRange));
+            	   				db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filter, test.getPriceSymbol(priceRange));
             	   		}
             	   		catch(Exception e)
             	   		{
             	   			e.printStackTrace();
             	   		}
-            	   		
                }
                
-               else
+               else if(usernameLogin.getText() != "Not Logged In")
                {
+            	   		System.out.println(usernameLogin.getText());
             	   		try
             	   		{		
-            	   				System.out.println(searchField.getText());
-            	   				System.out.println(zipCodeOrCity.getText());
+            	   				
             	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filter);
+            	   				if(ratingMenu.getText() == "Rating")
+            	   				{
+            	   					ratingMenu.setText(test.getStar(rating));
+            	   					ratingMenu.setTextFill(Color.YELLOW);
+            	   				}
+            	   				//db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
+            	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
             	   		}
             	   		catch(Exception e)
             	   		{
@@ -982,6 +993,25 @@ public class SearchScreen extends Application
             }
         }
         );
+        
+        MenuButton history = new MenuButton("Search History");
+        history.setMinWidth(200);
+        /*try
+        {
+        		ArrayList<String> historyList = db.getUserSearchHistory(db.getUserID(db.getUsername()));
+            for(String s1: historyList)
+            {
+            		MenuItem item = new MenuItem(s1);
+            		history.getItems().addAll(item);
+            }
+            history.setTranslateX(40);
+            gp.add(history, 0, 0);
+        }
+        catch(Exception e)
+        {
+        		e.printStackTrace();
+        }*/
+        
         
         VBox root = new VBox(10);
         //root.getStylesheets().add(this.getClass().getResource("searchButton.css").toExternalForm());
