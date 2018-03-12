@@ -16,9 +16,10 @@ import java.text.*;
 public class TestHttp
 {
     private static Scanner scanner;
-    
-    // Methods containing the word 'review' are the ones that display review text based on rating number and what was retrieved from the search.
+    SearchDAO sd = new SearchDAO();
     // Methods containing the word 'test' are the ones that set up the API call and perform the actual search
+    // Methods containing the word 'review' are the ones that display review text based on rating number and what was retrieved from the search.
+    
     ///////////////////////////////////
     public static void testFoursquare(String search, String location) throws Exception
     {
