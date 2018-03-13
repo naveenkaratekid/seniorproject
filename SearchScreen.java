@@ -18,10 +18,10 @@ import javafx.stage.*;
  // API: Application Programming Interface: Set of routines and definitions for building app software
 // JSON: Java Script Object Notation
 /**
- * Write a description of class searchScreen here.
+ * searchScreen
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author (Naveen Krishnamurthy) 
+ * @version (Version 2.1)
  */
 @SuppressWarnings("unchecked")
 public class SearchScreen extends Application
@@ -216,6 +216,209 @@ public class SearchScreen extends Application
        	default:
        		rating = 3;	
        }
+       
+       ArrayList<String> filter = new ArrayList<String>();
+       
+       CheckBox yelp = new CheckBox(); //Users/Naveen/Desktop/docs/Senior Project/Mixed Reviews
+       Image yelpLogo = new Image((getClass().getResource("yelp.png")).toExternalForm());
+       ImageView yelpView = new ImageView(yelpLogo);
+       
+       yelpView.setOnMouseClicked(new EventHandler<MouseEvent>()
+       {
+           public void handle(MouseEvent me) 
+           {
+           		if(!yelp.isSelected())
+           		{
+           			yelp.setSelected(true);
+           			filter.add("Yelp".toLowerCase());
+           			//filter.add(yelp.getText().toLowerCase());
+           			//db.storeFilter(yelp.getText().toLowerCase());
+           			System.out.println("Yelp selected");
+           		}
+           		else
+           		{
+           			yelp.setSelected(false);
+           			filter.remove(yelp.getText());
+           			filter.remove("Yelp".toLowerCase());
+           			//db.storeFilter(yelp.getText()).remove(yelp.getText());
+           			System.out.println("Yelp unselected");
+           		}
+           }
+       }
+       );
+       
+       /*yelp.selectedProperty().addListener(new ChangeListener<Boolean>() 
+       {
+               public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
+               {
+                   if(yelp.isSelected())
+                   {
+                   	   
+                   	   filter.add(yelp.getText().toLowerCase());
+                       db.storeFilter(yelp.getText().toLowerCase());
+                       System.out.println("Yelp selected");
+                   }
+                   else
+                   {
+                   		filter.remove(yelp.getText());
+                       db.storeFilter(yelp.getText()).remove(yelp.getText());
+                       System.out.println("Yelp unselected");
+                   }
+                   
+               }
+       }
+       );*/
+       yelpView.setTranslateX(-350);
+       yelpView.setTranslateY(370);
+       
+       
+       /*CheckBox tripAdvisor = new CheckBox("TripAdvisor");
+       tripAdvisor.selectedProperty().addListener(new ChangeListener<Boolean>() 
+       {
+               public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
+               {
+                   if(tripAdvisor.isSelected())
+                   {
+                   	    
+                   	    filter.add(tripAdvisor.getText().toLowerCase());
+                      	db.storeFilter(tripAdvisor.getText().toLowerCase());
+                      	System.out.println("tripAdvisor selected");
+                   }
+                   else
+                   {
+                    	filter.remove(tripAdvisor.getText());
+                       	db.storeFilter(tripAdvisor.getText()).remove(tripAdvisor.getText());
+                       	System.out.println("tripAdvisor unselected");
+                   }
+                   
+               }
+       }
+       );*/
+       
+       CheckBox googlePlaces = new CheckBox();
+       /*googlePlaces.selectedProperty().addListener(new ChangeListener<Boolean>() 
+       {
+               public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
+               {
+                   if(googlePlaces.isSelected())
+                   {
+                   		
+                   		filter.add(googlePlaces.getText().toLowerCase());
+                       db.storeFilter(googlePlaces.getText().toLowerCase());
+                       System.out.println("Google Places selected");
+                   }
+                   else
+                   {
+                   	    filter.remove(googlePlaces.getText());
+                       db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
+                       System.out.println("Google Places unselected");
+                   }
+                   
+               }
+       }
+       );*/
+       Image googleLogo = new Image((getClass().getResource("google.png")).toExternalForm());
+       ImageView googleView = new ImageView(googleLogo);     
+       googleView.setOnMouseClicked(new EventHandler<MouseEvent>()
+       {
+           public void handle(MouseEvent me) 
+           {
+           		
+           		if(!googlePlaces.isSelected())
+           		{
+           			googlePlaces.setSelected(true);
+           			filter.add("Google Places".toLowerCase());
+           			//filter.add(googlePlaces.getText().toLowerCase());
+                   //db.storeFilter(googlePlaces.getText().toLowerCase());
+                   System.out.println("Google Places selected");
+                   
+           		}
+           		else
+           		{
+           			googlePlaces.setSelected(false);
+           			filter.remove("Google Places".toLowerCase());
+                   //db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
+                   System.out.println("Google Places unselected");
+           		}
+           }
+       }
+       );
+       
+       googleView.setTranslateX(75);
+       googleView.setTranslateY(374);
+       
+       CheckBox foursquare = new CheckBox();
+       /*foursquare.selectedProperty().addListener(new ChangeListener<Boolean>() 
+       {
+               public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
+               {
+                   if(foursquare.isSelected())
+                   {
+                   		
+                   		filter.add(foursquare.getText().toLowerCase());
+                       db.storeFilter(foursquare.getText().toLowerCase());
+                       System.out.println("Foursquare selected");
+                   }
+                   else
+                   {
+                   		filter.remove(foursquare.getText());
+                       db.storeFilter(foursquare.getText()).remove(foursquare.getText());
+                       filter.remove(foursquare.getText());
+                       System.out.println("Foursquare unselected");
+                   }
+                   
+               }
+       }
+       );*/
+       Image foursquareLogo = new Image((getClass().getResource("foursquare.png")).toExternalForm());
+       ImageView foursquareView = new ImageView(foursquareLogo);
+       
+       foursquareView.setOnMouseClicked(new EventHandler<MouseEvent>()
+       {
+
+           public void handle(MouseEvent me) 
+           {
+           		
+           		if(!foursquare.isSelected())
+           		{
+           			foursquare.setSelected(true);
+           			filter.add("Foursquare".toLowerCase());
+                   System.out.println("Foursquare selected");
+           		}
+           		else
+           		{
+           			foursquare.setSelected(false);
+           			filter.remove("Foursquare".toLowerCase());
+                   System.out.println("Foursquare unselected");
+           		}
+           }
+       }
+       );
+       
+       foursquareView.setTranslateX(460);
+       foursquareView.setTranslateY(374);
+
+       yelp.setTranslateX(-310);
+       yelp.setTranslateY(375);
+       
+       //tripAdvisor.setTranslateX(-110);
+       //tripAdvisor.setTranslateY(375);
+       
+       googlePlaces.setTranslateX(50);
+       googlePlaces.setTranslateY(375);
+       
+       foursquare.setTranslateX(435);
+       foursquare.setTranslateY(375);
+       
+       gp.add(yelp, 0, 0);
+       //gp.add(tripAdvisor, 0, 0);
+       gp.add(googlePlaces, 0, 0);
+       gp.add(foursquare, 0, 0);
+       
+       gp.add(yelpView, 0, 0);
+       gp.add(googleView, 0, 0);
+       gp.add(foursquareView, 0, 0);
+       
 
         Button update = new Button("Update Profile");
         update.setTranslateX(425);
@@ -345,6 +548,12 @@ public class SearchScreen extends Application
         usernameLogin.setTranslateY(40);
         gp.add(usernameLogin, 0, 0);
         
+        MenuButton history = new MenuButton("Search History");
+        history.setTranslateX(25);
+        history.setVisible(false);
+        
+  		gp.add(history, 0, 0);
+  		
         Button login = new Button("Login / Enroll");
         login.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -387,12 +596,64 @@ public class SearchScreen extends Application
                 {
                     public void handle(ActionEvent ae)
                     {
-                        
                         String data = db.getUserProfile(username.getText(), pwBox.getText());
                         if(data != null)
                         {
                         	   usernameLogin.setText(data);
                         	   db.setUsername(username.getText());
+                        	   
+                        	   ArrayList<String> historyList = db.getUserSearchHistory(db.getUsername());
+                        	   history.setVisible(true);
+                        	   
+                      		//historyList = db.getUserSearchHistory(db.getUserID(db.getUsername()));
+                   			
+                        	   for(String s1: historyList)
+                        	   {
+                        		   	//System.out.println(s1);
+                        		   	
+                        		   	MenuItem item = new MenuItem();
+                        	        item.setText(s1);
+                      			history.getItems().addAll(item);
+                      			String[] strArray = s1.split("\\| ");
+                          		item.setOnAction(new EventHandler<ActionEvent>()
+                   				{
+                          			public void handle(ActionEvent ae)
+                          			{
+                          				System.out.println(strArray[0]);
+                          				System.out.println(strArray[1]);
+                          				System.out.println(strArray[2]);
+                          				System.out.println(strArray[3]);
+                          				System.out.println(strArray[4]);
+                          				
+                          				searchField.setText(strArray[0]);
+                          				zipCodeOrCity.setText(strArray[1]);
+                          				ratingMenu.setText(strArray[2]);
+                          				price.setText(strArray[4]);
+                          				String strArray3 = strArray[3].replaceAll("\\[|\\,|\\]", "");
+                          				System.out.println(strArray3);
+                          				if(strArray3.contains("google places"))
+                          				{
+                          					googlePlaces.setSelected(true);
+                      						filter.add("Google Places".toLowerCase());
+                          				}
+                          				if(strArray3.contains("yelp"))
+                          				{
+                          					yelp.setSelected(true);
+                      						filter.add("Yelp".toLowerCase());
+                          				}
+                          				
+                          				if(strArray3.contains("foursquare"))
+                          				{
+                          					foursquare.setSelected(true);
+                      						filter.add("Foursquare".toLowerCase());
+                          				}
+                          				
+                          				price.setText(strArray[4]);
+                          			}
+                   				}
+                          		);                 		
+                        	   }
+                        	   
                         	   update.setVisible(true);
                         	   update.setOnAction(new EventHandler<ActionEvent>()
                 			   {
@@ -511,6 +772,7 @@ public class SearchScreen extends Application
                                     				//e.printStackTrace();
                                     				// create popup with error
                                     			}
+                                    			usernameLogin.setText(firstNameField.getText() + " " + lastNameField.getText());
                                     		}
                                 		}
                                     );
@@ -544,8 +806,7 @@ public class SearchScreen extends Application
                          s11.setHeight(100);
                          Scene scene = new Scene(gp);
                          s11.setScene(scene);
-                         s11.show();
-                        	   
+                         s11.show(); 	   
                         }           
                     }
                 }
@@ -735,216 +996,7 @@ public class SearchScreen extends Application
         login.setTranslateY(75);
         gp.add(login, 0, 0);
         
-        ArrayList<String> filter = new ArrayList<String>();
-        
-        CheckBox yelp = new CheckBox(); //Users/Naveen/Desktop/docs/Senior Project/Mixed Reviews
-        Image yelpLogo = new Image((getClass().getResource("yelp.png")).toExternalForm());
-        ImageView yelpView = new ImageView(yelpLogo);
-        
-        yelpView.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            public void handle(MouseEvent me) 
-            {
-            		if(!yelp.isSelected())
-            		{
-            			yelp.setSelected(true);
-            			filter.add("Yelp".toLowerCase());
-            			//filter.add(yelp.getText().toLowerCase());
-            			//db.storeFilter(yelp.getText().toLowerCase());
-            			System.out.println("Yelp selected");
-            		}
-            		else
-            		{
-            			yelp.setSelected(false);
-            			filter.remove(yelp.getText());
-            			filter.remove("Yelp".toLowerCase());
-            			//db.storeFilter(yelp.getText()).remove(yelp.getText());
-            			System.out.println("Yelp unselected");
-            		}
-            }
-        }
-        );
-        
-        /*yelp.selectedProperty().addListener(new ChangeListener<Boolean>() 
-        {
-                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
-                {
-                    if(yelp.isSelected())
-                    {
-                    	   
-                    	   filter.add(yelp.getText().toLowerCase());
-                        db.storeFilter(yelp.getText().toLowerCase());
-                        System.out.println("Yelp selected");
-                    }
-                    else
-                    {
-                    		filter.remove(yelp.getText());
-                        db.storeFilter(yelp.getText()).remove(yelp.getText());
-                        System.out.println("Yelp unselected");
-                    }
-                    
-                }
-        }
-        );*/
-        yelpView.setTranslateX(-350);
-        yelpView.setTranslateY(370);
-        
-        
-        /*CheckBox tripAdvisor = new CheckBox("TripAdvisor");
-        tripAdvisor.selectedProperty().addListener(new ChangeListener<Boolean>() 
-        {
-                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
-                {
-                    if(tripAdvisor.isSelected())
-                    {
-                    	    
-                    	    filter.add(tripAdvisor.getText().toLowerCase());
-                       	db.storeFilter(tripAdvisor.getText().toLowerCase());
-                       	System.out.println("tripAdvisor selected");
-                    }
-                    else
-                    {
-                     	filter.remove(tripAdvisor.getText());
-                        	db.storeFilter(tripAdvisor.getText()).remove(tripAdvisor.getText());
-                        	System.out.println("tripAdvisor unselected");
-                    }
-                    
-                }
-        }
-        );*/
-        
-        CheckBox googlePlaces = new CheckBox();
-        /*googlePlaces.selectedProperty().addListener(new ChangeListener<Boolean>() 
-        {
-                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
-                {
-                    if(googlePlaces.isSelected())
-                    {
-                    		
-                    		filter.add(googlePlaces.getText().toLowerCase());
-                        db.storeFilter(googlePlaces.getText().toLowerCase());
-                        System.out.println("Google Places selected");
-                    }
-                    else
-                    {
-                    	    filter.remove(googlePlaces.getText());
-                        db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
-                        System.out.println("Google Places unselected");
-                    }
-                    
-                }
-        }
-        );*/
-        Image googleLogo = new Image((getClass().getResource("google.png")).toExternalForm());
-        ImageView googleView = new ImageView(googleLogo);     
-        googleView.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            public void handle(MouseEvent me) 
-            {
-            		
-            		if(!googlePlaces.isSelected())
-            		{
-            			googlePlaces.setSelected(true);
-            			filter.add("Google Places".toLowerCase());
-            			//filter.add(googlePlaces.getText().toLowerCase());
-                    //db.storeFilter(googlePlaces.getText().toLowerCase());
-                    System.out.println("Google Places selected");
-                    
-            		}
-            		else
-            		{
-            			googlePlaces.setSelected(false);
-            			filter.remove("Google Places".toLowerCase());
-                    //db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
-                    System.out.println("Google Places unselected");
-            		}
-            }
-        }
-        );
-        
-        googleView.setTranslateX(75);
-        googleView.setTranslateY(374);
-        
-        CheckBox foursquare = new CheckBox();
-        /*foursquare.selectedProperty().addListener(new ChangeListener<Boolean>() 
-        {
-                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
-                {
-                    if(foursquare.isSelected())
-                    {
-                    		
-                    		filter.add(foursquare.getText().toLowerCase());
-                        db.storeFilter(foursquare.getText().toLowerCase());
-                        System.out.println("Foursquare selected");
-                    }
-                    else
-                    {
-                    		filter.remove(foursquare.getText());
-                        db.storeFilter(foursquare.getText()).remove(foursquare.getText());
-                        filter.remove(foursquare.getText());
-                        System.out.println("Foursquare unselected");
-                    }
-                    
-                }
-        }
-        );*/
-        Image foursquareLogo = new Image((getClass().getResource("foursquare.png")).toExternalForm());
-        ImageView foursquareView = new ImageView(foursquareLogo);
-        
-        foursquareView.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
 
-            public void handle(MouseEvent me) 
-            {
-            		
-            		if(!foursquare.isSelected())
-            		{
-            			foursquare.setSelected(true);
-            			//filter.add(foursquare.getText().toLowerCase());
-            			filter.add("Foursquare".toLowerCase());
-                    //db.storeFilter(foursquare.getText().toLowerCase());
-                    System.out.println("Foursquare selected");
-            		}
-            		else
-            		{
-            			foursquare.setSelected(false);
-            			//filter.remove(foursquare.getText());
-            			filter.remove("Foursquare".toLowerCase());
-                    //db.storeFilter(foursquare.getText()).remove(foursquare.getText());
-                    System.out.println("Foursquare unselected");
-            		}
-            }
-        }
-        );
-        
-        foursquareView.setTranslateX(460);
-        foursquareView.setTranslateY(374);
-        
-        for(String item: filter)
-        {
-        		System.out.println(item);
-        }
-        
-        yelp.setTranslateX(-310);
-        yelp.setTranslateY(375);
-        
-        //tripAdvisor.setTranslateX(-110);
-        //tripAdvisor.setTranslateY(375);
-        
-        googlePlaces.setTranslateX(50);
-        googlePlaces.setTranslateY(375);
-        
-        foursquare.setTranslateX(435);
-        foursquare.setTranslateY(375);
-        
-        gp.add(yelp, 0, 0);
-        //gp.add(tripAdvisor, 0, 0);
-        gp.add(googlePlaces, 0, 0);
-        gp.add(foursquare, 0, 0);
-        
-        gp.add(yelpView, 0, 0);
-        gp.add(googleView, 0, 0);
-        gp.add(foursquareView, 0, 0);
         
         
         searchButton.setOnAction(new EventHandler<ActionEvent>()
@@ -984,6 +1036,7 @@ public class SearchScreen extends Application
             	   				}
             	   				//db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
             	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
+            	   				
             	   		}
             	   		catch(Exception e)
             	   		{
@@ -993,26 +1046,7 @@ public class SearchScreen extends Application
             }
         }
         );
-        
-        MenuButton history = new MenuButton("Search History");
-        history.setMinWidth(200);
-        /*try
-        {
-        		ArrayList<String> historyList = db.getUserSearchHistory(db.getUserID(db.getUsername()));
-            for(String s1: historyList)
-            {
-            		MenuItem item = new MenuItem(s1);
-            		history.getItems().addAll(item);
-            }
-            history.setTranslateX(40);
-            gp.add(history, 0, 0);
-        }
-        catch(Exception e)
-        {
-        		e.printStackTrace();
-        }*/
-        
-        
+
         VBox root = new VBox(10);
         //root.getStylesheets().add(this.getClass().getResource("searchButton.css").toExternalForm());
         
@@ -1025,8 +1059,7 @@ public class SearchScreen extends Application
         Scene scene = new Scene(root);
         s.setScene(scene);
         
-        
-        
+
         // This piece of code will kill any running threads after the application is terminated
         s.setOnCloseRequest(new EventHandler<WindowEvent>()
         {
