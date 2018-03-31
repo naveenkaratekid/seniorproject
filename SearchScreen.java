@@ -18,7 +18,7 @@ import javafx.stage.*;
  // API: Application Programming Interface: Set of routines and definitions for building app software
 // JSON: Java Script Object Notation
 /**
- * searchScreen
+ * Mixed Reviews
  * 
  * @author (Naveen Krishnamurthy) 
  * @version (Version 2.1)
@@ -45,11 +45,11 @@ public class SearchScreen extends Application
         gp.setAlignment(Pos.CENTER);
        
         Label clock = new Clock(); // using polymorphism
-        clock.setFont(new Font("Arial", 15));
+        clock.setFont(new Font("Arial", 20));
         clock.setVisible(true);
         clock.setTextFill(Color.DODGERBLUE);
-        clock.setTranslateX(50);
-        clock.setTranslateY(-50);
+        clock.setTranslateX(15);
+        clock.setTranslateY(-10);
         gp.add(clock, 0, 0);
         
         Button searchButton = new Button("Search");
@@ -57,11 +57,11 @@ public class SearchScreen extends Application
         searchButton.setTranslateY(175);
         gp.add(searchButton, 0,0);
         
-        Text title = new Text("Mixed Reviews");
+        /*Text title = new Text("Mixed Reviews");
         title.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
         title.setTranslateX(75);
         title.setTranslateY(50);
-        gp.add(title, 0, 0);
+        gp.add(title, 0, 0);*/
         
         // Price
         MenuButton price = new MenuButton("Select Price Range");
@@ -71,6 +71,7 @@ public class SearchScreen extends Application
         price1.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #008000;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         price1.setOnAction(event -> 
         {
@@ -82,6 +83,7 @@ public class SearchScreen extends Application
         price2.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #FFFF66;\n" + 
+        		"	 -fx-font-size: 15pt;\n" + 
         		"}");
         price2.setOnAction(event -> 
         {
@@ -92,6 +94,7 @@ public class SearchScreen extends Application
         price3.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #FF0000;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         price3.setOnAction(event -> 
         {
@@ -134,6 +137,7 @@ public class SearchScreen extends Application
         oneStar.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #FF0000;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         // I'm gonna use lamba for the fun of it
         oneStar.setOnAction(event -> 
@@ -148,6 +152,7 @@ public class SearchScreen extends Application
         twoStar.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #FF8000;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         twoStar.setOnAction(event -> 
         {
@@ -161,6 +166,7 @@ public class SearchScreen extends Application
         threeStar.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #FFFF66;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         threeStar.setOnAction(event -> 
         {
@@ -174,6 +180,7 @@ public class SearchScreen extends Application
         fourStar.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #008000;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         fourStar.setOnAction(event -> 
         {
@@ -187,6 +194,7 @@ public class SearchScreen extends Application
         fiveStar.setStyle(".menu-item .label {\n" + 
         		"    -fx-padding: 0em 0em 0em 0em;\n" + 
         		"    -fx-text-fill: #004080;\n" + 
+        		"	 -fx-font-size: 15pt;\n" +
         		"}");
         fiveStar.setOnAction(event -> 
         {
@@ -217,9 +225,10 @@ public class SearchScreen extends Application
        		rating = 3;	
        }
        
-       ArrayList<String> filter = new ArrayList<String>();
        
+       Set<String> filters = new HashSet<String>();
        CheckBox yelp = new CheckBox(); //Users/Naveen/Desktop/docs/Senior Project/Mixed Reviews
+       yelp.setDisable(true);
        Image yelpLogo = new Image((getClass().getResource("yelp.png")).toExternalForm());
        ImageView yelpView = new ImageView(yelpLogo);
        
@@ -230,7 +239,8 @@ public class SearchScreen extends Application
            		if(!yelp.isSelected())
            		{
            			yelp.setSelected(true);
-           			filter.add("Yelp".toLowerCase());
+           			
+           			filters.add("Yelp".toLowerCase());
            			//filter.add(yelp.getText().toLowerCase());
            			//db.storeFilter(yelp.getText().toLowerCase());
            			System.out.println("Yelp selected");
@@ -238,8 +248,8 @@ public class SearchScreen extends Application
            		else
            		{
            			yelp.setSelected(false);
-           			filter.remove(yelp.getText());
-           			filter.remove("Yelp".toLowerCase());
+
+           			filters.remove("Yelp".toLowerCase());
            			//db.storeFilter(yelp.getText()).remove(yelp.getText());
            			System.out.println("Yelp unselected");
            		}
@@ -296,6 +306,7 @@ public class SearchScreen extends Application
        );*/
        
        CheckBox googlePlaces = new CheckBox();
+       googlePlaces.setDisable(true);
        /*googlePlaces.selectedProperty().addListener(new ChangeListener<Boolean>() 
        {
                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
@@ -327,7 +338,8 @@ public class SearchScreen extends Application
            		if(!googlePlaces.isSelected())
            		{
            			googlePlaces.setSelected(true);
-           			filter.add("Google Places".toLowerCase());
+           			
+           			filters.add("Google Places".toLowerCase());
            			//filter.add(googlePlaces.getText().toLowerCase());
                    //db.storeFilter(googlePlaces.getText().toLowerCase());
                    System.out.println("Google Places selected");
@@ -336,7 +348,8 @@ public class SearchScreen extends Application
            		else
            		{
            			googlePlaces.setSelected(false);
-           			filter.remove("Google Places".toLowerCase());
+           			
+           			filters.remove("Google Places".toLowerCase());
                    //db.storeFilter(googlePlaces.getText()).remove(googlePlaces.getText());
                    System.out.println("Google Places unselected");
            		}
@@ -348,6 +361,7 @@ public class SearchScreen extends Application
        googleView.setTranslateY(374);
        
        CheckBox foursquare = new CheckBox();
+       foursquare.setDisable(true);
        /*foursquare.selectedProperty().addListener(new ChangeListener<Boolean>() 
        {
                public void changed(ObservableValue<? extends Boolean> obs, Boolean old, Boolean newVal)
@@ -382,13 +396,15 @@ public class SearchScreen extends Application
            		if(!foursquare.isSelected())
            		{
            			foursquare.setSelected(true);
-           			filter.add("Foursquare".toLowerCase());
+           			
+           			filters.add("Foursquare".toLowerCase());
                    System.out.println("Foursquare selected");
            		}
            		else
            		{
            			foursquare.setSelected(false);
-           			filter.remove("Foursquare".toLowerCase());
+           			
+           			filters.remove("Foursquare".toLowerCase());
                    System.out.println("Foursquare unselected");
            		}
            }
@@ -421,6 +437,7 @@ public class SearchScreen extends Application
        
 
         Button update = new Button("Update Profile");
+        
         update.setTranslateX(425);
         update.setTranslateY(20);
         update.setVisible(false);
@@ -440,7 +457,8 @@ public class SearchScreen extends Application
         // Distance
         MenuButton distanceMenu = new MenuButton("Distance");
         MenuItem mile5 = new MenuItem("5 miles");
-        
+        mile5.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         mile5.setOnAction(event -> 
         {
             String str = mile5.getText().replaceAll("[^\\d.]", ""); // truncate non numeric characters
@@ -450,6 +468,8 @@ public class SearchScreen extends Application
         });
         
         MenuItem mile10 = new MenuItem("10 miles");
+        mile10.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         mile10.setOnAction(event -> 
         {
             String str = mile10.getText().replaceAll("[^\\d.]", "");
@@ -459,6 +479,8 @@ public class SearchScreen extends Application
         });
         
         MenuItem mile25 = new MenuItem("25 miles");
+        mile25.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         mile25.setOnAction(event -> 
         {
             String str = mile25.getText().replaceAll("[^\\d.]", "");
@@ -468,6 +490,8 @@ public class SearchScreen extends Application
         });
                 
         MenuItem mile50 = new MenuItem("50 miles");
+        mile50.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         mile50.setOnAction(event -> 
         {
             String str = mile50.getText().replaceAll("[^\\d.]", "");
@@ -477,6 +501,8 @@ public class SearchScreen extends Application
         });
        
         MenuItem mile100 = new MenuItem("100 miles");
+        mile100.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         mile100.setOnAction(event -> 
         {
             String str = mile100.getText().replaceAll("[^\\d.]", "");
@@ -544,18 +570,21 @@ public class SearchScreen extends Application
         
         Text usernameLogin = new Text(); // displays user name
         usernameLogin.setText("Not Logged In");
+        usernameLogin.setStyle("	 -fx-font-size: 15pt;\n" +
+        		"}");
         usernameLogin.setTranslateX(300);
         usernameLogin.setTranslateY(40);
         gp.add(usernameLogin, 0, 0);
         
         MenuButton history = new MenuButton("Search History");
-        history.setTranslateX(25);
+        history.setTranslateX(-300);
+        history.setTranslateY(20);
         history.setVisible(false);
         
   		gp.add(history, 0, 0);
   		
-        Button login = new Button("Login / Enroll");
-        login.setOnAction(new EventHandler<ActionEvent>()
+        Button loginOrEnroll = new Button("Login / Enroll");
+        loginOrEnroll.setOnAction(new EventHandler<ActionEvent>()
         {
             public void handle(ActionEvent ae)
             {
@@ -572,8 +601,8 @@ public class SearchScreen extends Application
                 loginPageText.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
                 gp.add(loginPageText,0,0,2,1);
                 
-                Label searchBox = new Label("Username");
-                gp.add(searchBox,0, 1);
+                Label usernameLabel = new Label("Username");
+                gp.add(usernameLabel,0, 1);
                 
                 TextField username = new TextField();
                 username.setPromptText("Username");
@@ -613,6 +642,8 @@ public class SearchScreen extends Application
                         		   	
                         		   	MenuItem item = new MenuItem();
                         	        item.setText(s1);
+                        	        item.setStyle("	 -fx-font-size: 15pt;\n" +
+                        	        		"}");
                       			history.getItems().addAll(item);
                       			String[] strArray = s1.split("\\| ");
                           		item.setOnAction(new EventHandler<ActionEvent>()
@@ -634,18 +665,18 @@ public class SearchScreen extends Application
                           				if(strArray3.contains("google places"))
                           				{
                           					googlePlaces.setSelected(true);
-                      						filter.add("Google Places".toLowerCase());
+                      						filters.add("Google Places".toLowerCase());
                           				}
                           				if(strArray3.contains("yelp"))
                           				{
                           					yelp.setSelected(true);
-                      						filter.add("Yelp".toLowerCase());
+                      						filters.add("Yelp".toLowerCase());
                           				}
                           				
                           				if(strArray3.contains("foursquare"))
                           				{
                           					foursquare.setSelected(true);
-                      						filter.add("Foursquare".toLowerCase());
+                      						filters.add("Foursquare".toLowerCase());
                           				}
                           				
                           				price.setText(strArray[4]);
@@ -831,6 +862,7 @@ public class SearchScreen extends Application
                  */
                 
                 Button enroll = new Button("Enroll");
+                
                 enroll.setOnAction(new EventHandler<ActionEvent>()
                 {
                     public void handle(ActionEvent ae)
@@ -917,7 +949,7 @@ public class SearchScreen extends Application
                                 db.setFirstName(tf2.getText());
                                 db.setLastName(tf3.getText());
                                 db.setZipcode(Integer.parseInt(tf4.getText()));
-                                if(tf5.getText().matches("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$"))
+                                if(tf5.getText().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[A-Z][a-z]{2,6}$"))
 	                    			{
 	                    				db.setEmail(tf5.getText());
 	                    			}
@@ -925,56 +957,45 @@ public class SearchScreen extends Application
 	                    			{
 	                    				System.out.println("Invalid email address");
 	                    			}
-                                //db.setEmail(tf5.getText());
                                 db.setAddress(tf6.getText());
                                 try
                                 {
-                                        db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
+	                                	try
+	                        			{
+	                            			db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
+	                            			login.setVisible(false);
+	                        			}
+	                        			catch (MySQLIntegrityConstraintViolationException e)
+	                        			{
+	                        				
+	                        			}
+                                			//db.storeUserProfile(tf.getText(), tf2.getText(), tf3.getText(), pwBox.getText(), Integer.parseInt(tf4.getText()), tf5.getText(), tf6.getText());
                                         usernameLogin.setText(tf2.getText() + " " + tf3.getText());
-                                        
                                         String data = db.getUserProfile(tf.getText(), pwBox.getText());
-                                        System.out.println(tf.getText() + " " + pwBox.getText());
-                                        if(data != null)
+                                        //System.out.println(tf.getText() + " " + pwBox.getText());
+                                        usernameLogin.setText(data);
+                                 	   update.setVisible(true);
+                                 	   login.setVisible(false);
+                                        /*if(data != null)
                                         {
                                         	   usernameLogin.setText(data);
                                         	   update.setVisible(true);
                                         	   login.setVisible(false);
-
                                      	   s1.close();
-                                        }
-                                        
+                                        }*/
                                         s2.close();
                                         s1.close();          
                                 }
-                                catch (MySQLIntegrityConstraintViolationException e)
+                                catch (Exception e)
                                 {
-	                                	Stage s11 = new Stage();
-	                            		s11.setResizable(false);
-	                            		GridPane gp = new GridPane();
-	                                 gp.setAlignment(Pos.CENTER);
-	                                 gp.setHgap(20);
-	                                 gp.setVgap(20);
-	                                 gp.setPadding(new Insets(25,25,25,25));   
-	                                 Text t = new Text("This account already exists");
-	                                 t.setTranslateX(10);
-	                                 t.setTranslateY(10);
-	                                 t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-	                                 gp.add(t,0,0);
-                                 
-	                                 s11.setWidth(500);
-	                                 s11.setHeight(100);
-	                                 Scene scene = new Scene(gp);
-	                                 s11.setScene(scene);
-	                                 s11.show();
-                                			
-                                        // create pop up that contains the error message
+	                                	
                                 }
                             }
                         }
                         );
                         s2.close();
                         gp.add(signUp, 0, 0);
-                        
+                        login.setVisible(false);
                         s2.setWidth(500);
                         s2.setHeight(500);
                         Scene scene = new Scene(gp);
@@ -992,9 +1013,9 @@ public class SearchScreen extends Application
         );
         
        
-        login.setTranslateX(315);
-        login.setTranslateY(75);
-        gp.add(login, 0, 0);
+        loginOrEnroll.setTranslateX(315);
+        loginOrEnroll.setTranslateY(75);
+        gp.add(loginOrEnroll, 0, 0);
         
 
         
@@ -1008,13 +1029,13 @@ public class SearchScreen extends Application
                {
             	   		try
             	   		{		
-            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filter);
+            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
             	   				if(ratingMenu.getText() == "Rating")
             	   				{
             	   					ratingMenu.setText(test.getStar(rating));
             	   					ratingMenu.setTextFill(Color.YELLOW);
             	   				}
-            	   				db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filter, test.getPriceSymbol(priceRange));
+            	   				db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));
             	   		}
             	   		catch(Exception e)
             	   		{
@@ -1028,14 +1049,14 @@ public class SearchScreen extends Application
             	   		try
             	   		{		
             	   				
-            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filter);
+            	   				test.search(searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filters);
             	   				if(ratingMenu.getText() == "Rating")
             	   				{
             	   					ratingMenu.setText(test.getStar(rating));
             	   					ratingMenu.setTextFill(Color.YELLOW);
             	   				}
             	   				//db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
-            	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filter, test.getPriceSymbol(priceRange), dateStr);
+            	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filters, test.getPriceSymbol(priceRange), dateStr);
             	   				
             	   		}
             	   		catch(Exception e)
@@ -1050,9 +1071,14 @@ public class SearchScreen extends Application
         VBox root = new VBox(10);
         //root.getStylesheets().add(this.getClass().getResource("searchButton.css").toExternalForm());
         
+        //////////////////////////////////////////////////////
+        
+        
+        //////////////////////////////////////////////////////
         root.getChildren().add(gp);
         //root.getChildren().addAll(searchButton, gp);
         
+        s.setTitle("Mixed Reviews");
         s.setWidth(950);
         s.setHeight(500);
         s.show();

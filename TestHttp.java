@@ -3,6 +3,9 @@ package com.cogswell.seniorproject;
 import okhttp3.*;
 import okio.*;
 import org.json.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.*;
 import java.net.*;
 import java.text.*;
@@ -53,17 +56,20 @@ public class TestHttp
                  {
                      b = jo2.getString("name");
                      System.out.println("Name is: " + b);
+                     System.out.println();
                      list.add(b);
                  }
                  catch(Exception e)
                  {
                      System.out.println("No name");
+                     e.printStackTrace();
                  }
                  
                  try
                  {
                      c = jo5.getJSONArray("formattedAddress").toString();
                      System.out.println("Address is: " + c);
+                     System.out.println();
                      list.add(c);
                  }
                  catch(Exception e)
@@ -75,6 +81,7 @@ public class TestHttp
                  {
                      d = jo4.getString("formattedPhone");
                      System.out.println("Phone number is: " + d);
+                     System.out.println();
                      list.add(d);
                  }
                  catch(Exception e)
@@ -86,14 +93,17 @@ public class TestHttp
                  {
                      a = jo2.getString("id");
                      System.out.println("Id is: " + a);
+                     
+                     System.out.println();
+                     System.out.println("-------------------------------------");
                      list.add(a);
                  }
+                 
                  catch(Exception e)
                  {
                      System.out.println("No id");
                  }
              }
-             System.out.println("----------------");
              System.out.println();
         }
         catch(Exception e)
@@ -111,7 +121,7 @@ public class TestHttp
         
         for(String id: list)
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD");
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYYmmdd");
             String date = sdf.format(new Date());
             
             url = "https://api.foursquare.com/v2/venues/"+id+"/tips?oauth_token=P14YL1YOGUDWTKBWER14IDBWV4BYBW4ASKCC2GRGDY3F5BZQ&v="+date; 
@@ -123,16 +133,6 @@ public class TestHttp
             Response response = client.newCall(request).execute();
             String s = response.body().string();
             System.out.print(id + "\n");
-            //System.out.println(s);
-            //"\"Hello\""
-            // {"meta":{"code":400,"errorType":"param_error","errorDetail"
-            //"{" + "\"meta\"" + ":{""\code\""+":400," + "\"errorType\""+ ":" + "\"param_error\""+"," + "\"errorDetail\""
-            //"{""\"meta\""":{""\code\""":400,""\"errorType\""":""\"param_error\""",""\"errorDetail\""
-            //String err = "{"+"\"meta\"" + ":{"+"\"code\"" + ":400," + "\"errorType\""+ ":" + "\"param_error\""+ "," + "\"errorDetail\""; 
-            //if(s.contains(err))
-            //{
-                //System.out.println("Ignore");
-            //}
             JSONObject jo = new JSONObject(s);
             String b; 
             
@@ -145,13 +145,10 @@ public class TestHttp
                     for(int i = 0; i < ja.length(); i++)
                     {
                         JSONObject jo2 = ja.getJSONObject(i);
-                        b = jo2.getString("text");
-                        //"\"Hello\""
-                        
+                        b = jo2.getString("text"); 
                         System.out.println("\n" + b);                      
                     }
-                    System.out.println();
-                    
+                    System.out.println(); 
                 }
                 catch(Exception e)
                 {
@@ -161,11 +158,11 @@ public class TestHttp
             }
             catch(Exception e)
             {
-                
+               
+                //e.printStackTrace();
             }
         }
     }
-    
     
     ///////////////////////////////////
     public static String testGoogle(String search, String location, int rating) throws Exception
@@ -250,10 +247,12 @@ public class TestHttp
             JSONObject jo = new JSONObject(s);
           
             int a = 0;
-            String b = "";
+            String b = "", c = "";
             JSONObject jo2 = jo.getJSONObject("result"); 
             try
             {
+            		c = jo2.getString("formatted_phone_number");
+            		System.out.println(c);
                 JSONArray ja2 = jo2.getJSONArray("reviews");
                 for(int i = 0; i < ja2.length(); i++)
                 {
@@ -277,7 +276,7 @@ public class TestHttp
     }
     //////////////////////////
     
-    public static String testYelp(String term, String location, int rating) throws Exception
+    public static void testYelp(String term, String location, int rating) throws Exception
     {
         OkHttpClient client = new OkHttpClient();
         System.out.println("-------------Yelp Test-------------");
@@ -359,7 +358,7 @@ public class TestHttp
             System.out.println();
         }
         yelpReview(idList, rating);
-        return "";
+        //return "";
     }  
     
     /*
@@ -581,12 +580,12 @@ public class TestHttp
     }
     
     // create search method to save into database the criteria ONLY and to call the appropriate APIs for search sites
-    public static void search(String searchTerm, String cityOrZip, String rating, int distance, int price, ArrayList<String> listOfFilters) throws Exception
+    public static void search(String searchTerm, String cityOrZip, String rating, int distance, int price, Set<String> listOfFilters /*, ArrayList<String> listOfFilters*/) throws Exception
     {
         int r = getRating(rating);
         for(String searchFilterName: listOfFilters)
         {
-            switch(searchFilterName)
+            switch(searchFilterName.toLowerCase())
             {
                 case "yelp":
                     //testYelp(searchTerm, cityOrZip, r, price, distance);
@@ -610,7 +609,7 @@ public class TestHttp
     
     public static void main(String[] args) throws Exception
     {
-    		System.out.println(System.getProperty("user.dir"));
+    		//System.out.println(System.getProperty("user.dir"));
     		
         scanner = new Scanner(System.in);
         System.out.println("Enter a search term: ");
@@ -664,8 +663,8 @@ public class TestHttp
         {
             rating = Integer.parseInt(ratingNum);
         }
-        
-        ArrayList<String> listOfFilters = new ArrayList<String>();
+        Set<String> listOfFilters = new HashSet<String>();
+        //ArrayList<String> listOfFilters = new ArrayList<String>();
         
         for(int i = 0; i < 3; i++)
         {
@@ -682,6 +681,6 @@ public class TestHttp
             }
             
         }
-        search(term, location, getStar(rating), radius, priceRange, listOfFilters);
+        	search(term, location, getStar(rating), radius, priceRange, listOfFilters);
     }
 }

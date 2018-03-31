@@ -7,6 +7,15 @@ import java.text.*;
 import java.util.*;
 
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 public class SearchDAO
 {
     // instance variables - replace the example below with your own
@@ -30,12 +39,12 @@ public class SearchDAO
 	private static String selectFromUserProfileID = "select userID from userProfile where username = ?;";
 	private static ArrayList<String> searchHistoryList = new ArrayList<String>();
 	private static String getUserSearchHistory = "select * from userSearch where userID = ?;";
-	//private static String getCountOfUserSearch = "select count(*) from userSearch;";
+	private static String getCountOfUserSearch = "select count(*) from userSearch where userID = ?;";
 	//private static String getCountOfUserSearch = "select userID from userProfile where username = ?;";
 	private static Date date = new Date();
     private static SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 	private static String dateStr = df.format(date);
-	
+	private static String selectFromUserProfileEnroll = "select * from userProfile where username = ?;";
 	public SearchDAO()// throws Exception
     {
     		//c1 = getConnection();
@@ -117,7 +126,27 @@ public class SearchDAO
 	}
 
 
-	public static int getUserID(String userName) throws Exception
+	public static int getCountOfUserIDs(int userID)
+	{
+		try
+		{
+			c1 = getConnection();
+   			PreparedStatement ps1 = c1.prepareStatement(getCountOfUserSearch);
+			ps1.setInt(1, userID);
+			ResultSet rs1 = ps1.executeQuery();
+			rs1.next();
+			int count = rs1.getInt(1);
+			System.out.println(count);
+			return count;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public static int getUserID(String userName)
    	{
    		try
    		{
@@ -191,9 +220,8 @@ public class SearchDAO
 			
 		}
     }
-    
-    
-    public static void storeUserSearch(String userName, String searchName, String zipcodeOrCity, String rating, ArrayList<String> listOfFilters, String price, String date)
+     
+    public static void storeUserSearch(String userName, String searchName, String zipcodeOrCity, String rating, /*ArrayList<String>*/Set<String> listOfFilters, String price, String date)
     {
     		try
     		{			
@@ -269,6 +297,8 @@ public class SearchDAO
             c1 = getConnection();
             //String selectFromUserProfile = "select * from userProfile where username = '" + username + "';";
             PreparedStatement ps = c1.prepareStatement(selectFromUserProfileDetails);
+            ps.setString(1,  username);
+            System.out.println(ps);
             ResultSet rs = ps.executeQuery();
             if(rs.next())
 		    {
@@ -333,22 +363,67 @@ public class SearchDAO
 		}
     }
     
-   	public static ArrayList<String> getUserSearchHistory(int userID) throws Exception
+   //public static ArrayList<String> getUserSearchHistory(int userID) throws Exception
+   	public static ArrayList<String> getUserSearchHistory(String userName)
    	{
    		try
    		{
+   			int userID = SearchDAO.getUserID(userName);
+   			System.out.println(userID);
+   			
+   			int count = SearchDAO.getCountOfUserIDs(userID);
+   			
    			PreparedStatement ps = c1.prepareStatement(getUserSearchHistory);
    			ps.setInt(1, userID);
    			System.out.println(ps);
 			ResultSet rs = ps.executeQuery();
    			
-			if(rs.next())
+			for(int i = 0; i < count; i++)
+			{
+				if(rs.next())
+			    {
+			    		String searchName = rs.getString(1);
+			    		String zipcodeOrCity = rs.getString(2);
+			    		String rating = rs.getString(3);
+			    		String sites = rs.getString(4);
+			    		String price = rs.getString(6);
+			    		
+			    		String search =  searchName + " | " + zipcodeOrCity + " | " + rating + " | " + sites + " | " + price;
+			    		/*System.out.println(searchName);
+			    		System.out.println(zipcodeOrCity);
+			    		System.out.println(rating);
+			    		System.out.println(sites);
+			    		System.out.println(price);*/
+			    		
+			    		searchHistoryList.add(search);
+			    		
+			    		/*searchHistoryList.add(searchName);
+			    		searchHistoryList.add(zipcodeOrCity);
+			    		searchHistoryList.add(rating);
+			    		searchHistoryList.add(sites);
+			    		searchHistoryList.add(price);*/
+			    		
+			    }
+			    else 
+			    {
+			    		return null;
+			    }
+				
+			}
+			/*if(rs.next())
 		    {
 		    		String searchName = rs.getString(1);
 		    		String zipcodeOrCity = rs.getString(2);
 		    		String rating = rs.getString(3);
 		    		String sites = rs.getString(4);
 		    		String price = rs.getString(6);
+		    		
+		    		System.out.println(searchName);
+		    		System.out.println(zipcodeOrCity);
+		    		System.out.println(rating);
+		    		System.out.println(sites);
+		    		System.out.println(price);
+		    		
 		    		searchHistoryList.add(searchName);
 		    		searchHistoryList.add(zipcodeOrCity);
 		    		searchHistoryList.add(rating);
@@ -359,7 +434,7 @@ public class SearchDAO
 		    else 
 		    {
 		    		return null;
-		    }
+		    }*/
    			
    			/*PreparedStatement ps = c1.prepareStatement(getUserSearchHistory);
    			ps.setInt(1, userID);
@@ -384,7 +459,7 @@ public class SearchDAO
 		    {
 		    		return null;
 		    }*/
-   			
+			return searchHistoryList;	
    		}
    		catch(Exception e)
    		{
@@ -400,7 +475,7 @@ public class SearchDAO
      *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
      */
     
-    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int distance, String rating, ArrayList<String> listOfFilters, String price) throws Exception
+    public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int distance, String rating, /*ArrayList*/Set<String> listOfFilters, String price) throws Exception
     {
     	try
 		{
@@ -436,13 +511,54 @@ public class SearchDAO
 		}
     }
     
+    public static void accountExists()
+    {
+    		Stage s11 = new Stage();
+		s11.setResizable(false);
+		GridPane gp = new GridPane();
+	     gp.setAlignment(Pos.CENTER);
+	     gp.setHgap(20);
+	     gp.setVgap(20);
+	     gp.setPadding(new Insets(25,25,25,25));   
+	     Text t = new Text("This account already exists");
+	     t.setTranslateX(10);
+	     t.setTranslateY(10);
+	     t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+	     gp.add(t,0,0);
+	 
+	     s11.setWidth(500);
+	     s11.setHeight(100);
+	     Scene scene = new Scene(gp);
+	     s11.setScene(scene);
+	     s11.show();
+	     
+    }
     
-    public static void storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws MySQLIntegrityConstraintViolationException
+    /*public static String storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws MySQLIntegrityConstraintViolationException
     {
         try
-        {
-        			
+        {	
             c1 = getConnection();
+            
+            PreparedStatement ps1 = c1.prepareStatement(selectFromUserProfileEnroll);
+            ps1.setString(1, username);
+            System.out.println(ps1);
+            ResultSet rs = ps1.executeQuery();
+            
+            if(!rs.next())
+            {
+            	    PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+                ps.setString(1, username);
+                ps.setString(2, firstName);
+                ps.setString(3, lastName);
+                ps.setString(4, password);
+                ps.setInt(5, zipcode);
+                ps.setString(6,  email);
+                ps.setString(7, address);
+                System.out.println(ps);
+                //ps.execute(); 
+            }
+            
             PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
             ps.setString(1, username);
             ps.setString(2, firstName);
@@ -455,18 +571,84 @@ public class SearchDAO
             
             try
             {
-            	 ps.execute();
-            	 
+            	 	ps.execute(); 
+            	 	return "";
             }
-            catch(MySQLIntegrityConstraintViolationException me)
+            catch(Exception e)
             {
-            		throw new Exception("This account already exists");
-            }
-            
+            		return "This account already exists";
+            		//throw new MySQLIntegrityConstraintViolationException("This account already exists"); 		
+            }   
         }
         catch(Exception e)
         {
-            System.out.println(e);
+        		//e.printStackTrace();
+        		//accountExists();
+        }
+        return "";
+    }*/
+    
+    
+
+    /*
+     * storeUserProfile() will store the user's profile data containing:
+     * firstName
+     * lastName
+     * password
+     * zipcode
+     * email
+     * address
+     * 
+     * into the database table userProfile
+     */
+    public static void storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws MySQLIntegrityConstraintViolationException
+    {
+        try
+        {	
+            c1 = getConnection();
+            
+            PreparedStatement ps1 = c1.prepareStatement(selectFromUserProfileEnroll);
+            ps1.setString(1, username);
+            System.out.println(ps1);
+            ResultSet rs = ps1.executeQuery();
+            
+            if(!rs.next())
+            {
+            	    PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+                ps.setString(1, username);
+                ps.setString(2, firstName);
+                ps.setString(3, lastName);
+                ps.setString(4, password);
+                ps.setInt(5, zipcode);
+                ps.setString(6, email);
+                ps.setString(7, address);
+                System.out.println(ps);
+                //ps.execute(); 
+            }
+            
+            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
+            ps.setString(1, username);
+            ps.setString(2, firstName);
+            ps.setString(3, lastName);
+            ps.setString(4, password);
+            ps.setInt(5, zipcode);
+            ps.setString(6,  email);
+            ps.setString(7, address);
+            System.out.println(ps);
+            
+            try
+            {
+            	 	ps.execute(); 
+            }
+            catch(Exception e)
+            {
+            		throw new MySQLIntegrityConstraintViolationException("This account already exists"); 		
+            }   
+        }
+        catch(Exception e)
+        {
+        		//e.printStackTrace();
+        		accountExists();
         }
     }
     
