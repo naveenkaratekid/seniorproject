@@ -200,26 +200,6 @@ public class SearchDAO
 		SearchDAO.zipcode = zipcode;
 	}
 
-    public static void storeResults(String result)
-    {
-    	try
-		{
-            c1 = getConnection();
-            //String insertIntoResult = "insert into userSearch values ('" + result + "');";
-            PreparedStatement ps = c1.prepareStatement(insertIntoResult);
-            
-            //Statement s = c1.createStatement();
-      
-            
-            int rs = ps.executeUpdate(insertIntoResult);
-            //int rs = s.executeUpdate(insertIntoUserProfile);
-           
-		}
-		catch(Exception e)
-		{
-			
-		}
-    }
      
     public static void storeUserSearch(String userName, String searchName, String zipcodeOrCity, String rating, /*ArrayList<String>*/Set<String> listOfFilters, String price, String date)
     {

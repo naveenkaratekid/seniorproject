@@ -81,7 +81,7 @@ public class WriteToHTML {
         String tempFile = projectPath + File.separator+fileName;
         File file = new File(tempFile);
         // if file does exists, then delete and create a new file
-        if (file.exists()) {
+        /*if (file.exists()) {
             try {
                 File newFileName = new File(projectPath + File.separator+ "backup_"+fileName);
                 file.renameTo(newFileName);
@@ -89,7 +89,7 @@ public class WriteToHTML {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         //write to file with OutputStreamWriter
         OutputStream outputStream = new FileOutputStream(file.getAbsoluteFile());
         Writer writer=new OutputStreamWriter(outputStream);

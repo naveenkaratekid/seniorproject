@@ -1,0 +1,32 @@
+h1
+{
+   font-family: "Calibri", "Arial", sans-serif;
+   text-align: center;
+}
+
+.header
+{
+    font-family: "Arial";
+    
+}
+
+#reviewsTitle
+{
+	font-family: "Calibri", "Arial", sans-serif;
+	font-style: bold, italic;
+	text-align: left;
+	font-size: 10px;
+}
+
+#reviews
+{
+	font-family: "Calibri", "Arial", sans-serif;
+	font-size: 15px;
+	
+}
+
+#yelpIcon
+{
+	transform:translateX(0px);
+	transform:translateY(20px);
+}
