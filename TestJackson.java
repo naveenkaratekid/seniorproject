@@ -468,6 +468,7 @@ public class TestJackson
         		Map<String, Double> review = new HashMap<String, Double>();
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(s);
+			List<JsonNode> ln6 = (ArrayList<JsonNode>)jsonNode.findValues("weekday_text");
 			List<JsonNode> ln1 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_phone_number");
 			List<JsonNode> ln5 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_address");
 			
@@ -520,15 +521,18 @@ public class TestJackson
             
 			for(int i = 0; i < ln2.size(); i++)
 			{
+				System.out.println(ln6.get(i).toString());
 			    List<JsonNode> ln3 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
 	    			List<JsonNode> ln4 = (ArrayList<JsonNode>)jsonNode.findValues("text");
-	    			
+	    			hsb.append("<h3>Business Hours</h3>");
+	    			hsb.append("<h4>" + ln6.get(i).toString().replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "\n").replaceAll(",", "<br>") + "</h4>");
 			    for(int j = 0; j < ln4.size(); j++)
 			    {
 			    	 	a = Double.parseDouble(ln3.get(j+1).toString());
 			    		review.put(ln4.get(j).toString(), a);
 			    }
-			    
+			    hsb.append("<br>");
+			    hsb.append("<h3>Reviews</h3>");
 			    for(Map.Entry<String, Double> m1: review.entrySet())
 		    		{
 		    			String key = m1.getKey();
