@@ -33,7 +33,7 @@ public class SearchScreens extends Application
 	int distance = 0;
     // instance variables - replace the example below with your own
 	//private static TestHttp test = new TestHttp();
-	private static TestJackson test = new TestJackson();
+	private static TestJackson2 test = new TestJackson2();
 	SearchDAO db = new SearchDAO();
 
 	private static Date date = new Date();
@@ -642,13 +642,16 @@ public class SearchScreens extends Application
 	        		{
 	        	   		try
 	        	   		{
-	        	   			test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
 	        	   			if(ratingMenu.getText() == "Rating")
 	        	   			{
 	        	   				ratingMenu.setText(test.getStar(rating));
 	        	   				ratingMenu.setTextFill(Color.YELLOW);
 	        	   			}
-	        	   			db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));
+	        	   			db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));	
+	        	   			test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
+	        	   			//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));
+	        	   			
+	        	   			//db.storeGeneralResults(searchField.getText());
 	        	   		}
 	        	   		catch(Exception e)
 	        	   		{

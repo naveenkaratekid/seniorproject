@@ -757,8 +757,8 @@ public class TestJackson
         int rating = scanner.nextInt();
         if(rating >= 0 && rating <= 5)
         {
-        		//testYelp("", term, location, rating);
-        		testGoogle("", term, location, rating);
+        		testYelp("", term, location, rating);
+        		//testGoogle("", term, location, rating);
         		 //testFoursquare(term, location);
         }
         else

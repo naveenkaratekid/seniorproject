@@ -27,13 +27,16 @@ public class SearchDAO
 	private static int zipcode, distance;
 	private static String rating;
 	private static String price;
-	private static String insertIntoResult = "insert into userSearch values ('?');";
-	private static String insertIntoPopularSearch = "insert into userSearch values ('?');";
+	private static String selectFromGeneralResults = "select * from generalResults where searchName = ?;";
+	//private static String insertIntoUserResult = "insert into userSearch values ('?');";
+	private static String insertIntoGeneralResult = "insert into generalResults values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private static String selectIDFromGeneralSearch = "select max(id) from generalSearch where name = ? and rating = ? and city = ?;";
+	//private static String insertIntoPopularSearch = "insert into userSearch values ('?');";
 	private static String selectFromUserProfile = "select * from userProfile where username = ? and password = ?;";
 	private static String selectFromUserProfileDetails = "select * from userProfile where username = ?;";
 	private static String insertIntoUserSearch = "insert into userSearch values (?, ?, ?, ?, ?, ?, ?)";
 	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";
-	private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
+	//private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
 	private static String insertIntoUserProfile = "insert into userProfile (username, firstName, lastName, password, zipcode, email, address) values (?, ?, ?, ?, ?, ?, ?);";
 	private static String insertIntoGeneralSearch = "insert into generalSearch (name, rating, siteName, distance, city, price, date) values (?, ?, ?, ?, ?, ?, ?)";
 	private static String selectFromUserProfileID = "select userID from userProfile where username = ?;";
@@ -449,7 +452,121 @@ public class SearchDAO
    		return null;
    		
    	}
+   	
+   	public static void getResultsFromAddress()
+   	{
+   		try
+   		{
+   			
+   		}
+   		catch(Exception e)
+   		{
+   			
+   		}
+   	}
+   	
+   	
+   	public int getID(String term, String rating, String cityOrZip)
+   	{
+   		try
+   		{
+   			c1 = getConnection();
+   			PreparedStatement ps = c1.prepareStatement(selectIDFromGeneralSearch);
+   			ps.setString(1, term);
+   			ps.setString(2, rating);
+   			ps.setString(3, cityOrZip);
+   			System.out.println(ps);
+   			ResultSet rs = ps.executeQuery();
+   			if(rs.next())
+   			{
+   				int col = rs.getInt(1);
+   				return col;
+   			}
+   		}
+   		catch(Exception e)
+   		{
+   			
+   		}
+   		
+   		return 0;
+   	}
+   	
+   	public void storeGeneralResults(String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
+   	{
+   		try
+		{
+    			
+    			//System.out.println("Rating is: " + rating);
+    			// String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address
+            c1 = getConnection();
+            PreparedStatement ps = c1.prepareStatement(insertIntoGeneralResult);
+            ps.setString(1, searchName);
+            ps.setString(2, results);
+            ps.setString(3, placeName);
+            ps.setString(4, avgRating);
+            ps.setString(5, priceRange);
+            ps.setString(6, phone);
+            ps.setString(7, address);
+            ps.setString(8,  sourceName);
+            ps.setString(9, businessHours);
+            ps.setInt(10,  searchID);
+            
+            System.out.println(ps);
+            
+            try
+            {
+            		ps.execute();
+            }
+            catch(SQLException se)
+            {
+            		//continue;
+            }
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+   	}
 
+   	public static StringBuilder getResultsOffline(String searchName) throws Exception
+   	{
+   		StringBuilder hsb = new StringBuilder();
+   		
+   		try
+   		{
+		    c1 = getConnection();
+		    //String selectFromUserProfile = "select * from userProfile where username = '" + username + "' and password = '" + password + "';";
+		    PreparedStatement ps = c1.prepareStatement(selectFromGeneralResults);
+		    ps.setString(1, searchName);
+		    ResultSet rs = ps.executeQuery();    
+		    if(rs.next())
+		    {
+		    		String term = rs.getString(1);
+		    		String text = rs.getString(2);
+		    		String placeName = rs.getString(3);
+		    		Double avgRating = Double.parseDouble(rs.getString(4));
+		    		String priceRange = rs.getString(5);
+		    		String phoneNumber = rs.getString(6);
+		    		String address = rs.getString(7);
+		    		
+		    		String result = firstName + " " + lastName;
+		    		System.out.println(result);
+		    		//return result;
+		    }
+		    else 
+		    {
+		    		return null;
+		    }
+   		}
+	    catch(Exception e)
+	    	{
+	    		e.printStackTrace();
+	    	}
+	    	return null;
+   	}
+   		
+   	
+   	
    	
     /*
      *	storeGeneralSearch() will store the general search history onto the database. Note that this IS NOT pertained to the user. 
@@ -457,7 +574,7 @@ public class SearchDAO
     
     public static void storeGeneralSearch(String searchName, String zipcodeOrCity, int distance, String rating, /*ArrayList*/Set<String> listOfFilters, String price) throws Exception
     {
-    	try
+    		try
 		{
     			
     			System.out.println("Rating is: " + rating);
