@@ -647,7 +647,10 @@ public class SearchScreens extends Application
 	        	   				ratingMenu.setText(test.getStar(rating));
 	        	   				ratingMenu.setTextFill(Color.YELLOW);
 	        	   			}
+	        	   			//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));	
+	        	   			
 	        	   			db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));	
+	        	   			
 	        	   			test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
 	        	   			//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));
 	        	   			
@@ -664,12 +667,13 @@ public class SearchScreens extends Application
 	        	   		System.out.println(usernameLogin.getText());
 	        	   		try
 	        	   		{		
-	        	   			test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
 	    	   				if(ratingMenu.getText() == "Rating")
 	    	   				{
 	    	   					ratingMenu.setText(test.getStar(rating));
 	    	   					ratingMenu.setTextFill(Color.YELLOW);
 	    	   				}
+    	   					test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, priceRange, filters);
+	    	   				//test.search(usernameLogin.getText(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), distance, test.getPrice(price.getText()), filters);
 	    	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filters, test.getPriceSymbol(priceRange), dateStr);		
 	        	   		}
 	        	   		catch(Exception e)

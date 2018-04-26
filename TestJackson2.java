@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,26 +34,26 @@ public class TestJackson2
 	static OkHttpClient client = new OkHttpClient();
 	
 	
-	public static StringBuilder testFoursquare(String username, String search, String location) throws Exception
+	public static int foursquareSearch(String username, String searchName, String location, String rating) throws Exception
     {
 		
         // Foursquare OAuth2 access token: P14YL1YOGUDWTKBWER14IDBWV4BYBW4ASKCC2GRGDY3F5BZQ
         
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd");
         String date = sdf.format(new Date());
-        String url = "https://api.foursquare.com/v2/venues/search?near=" + location + "&query=" + search + "&v=" + date + "&client_secret=SNZBRYNWZ0YPETJKXGW4LGGEX0KHM2Q2JOOJJH1UBAJ2CQD0&client_id=RZRA3MOZSBX1R3Y1ZUFXUO3YT2BSKBWSSRKXX3G3LKUQDBEU";
+        String url = "https://api.foursquare.com/v2/venues/search?near=" + location + "&query=" + searchName + "&v=" + date + "&client_secret=SNZBRYNWZ0YPETJKXGW4LGGEX0KHM2Q2JOOJJH1UBAJ2CQD0&client_id=RZRA3MOZSBX1R3Y1ZUFXUO3YT2BSKBWSSRKXX3G3LKUQDBEU";
         Request request = new Request.Builder()
           .url(url)
           .get()
           .build();
         
-        StringBuilder HTMLBodyContent = new StringBuilder();
+        //StringBuilder HTMLBodyContent = new StringBuilder();
         
         Response response = client.newCall(request).execute();
         String s = response.body().string();
         JSONObject jo = new JSONObject(s);
         JSONObject jo1 = jo.getJSONObject("response");
-       
+        int idFromGeneralSearch = 0;
         String a,b,c,d;
         try
         {
@@ -81,8 +82,8 @@ public class TestJackson2
                      System.out.println("Phone number is: " + d);
                      
                      
-                     StringBuilder hsb = foursquareReview(username, a, b, c, d); 
-                     HTMLBodyContent.append(hsb);
+                     /*StringBuilder hsb*/ idFromGeneralSearch = foursquareReview(searchName, location, username, a, b, c, d, rating); 
+                     //HTMLBodyContent.append(hsb);
                  }
                  catch(Exception e)
                  {
@@ -94,16 +95,16 @@ public class TestJackson2
              System.out.println();
              
              System.out.println();
-             
+             //return idFromGeneralSearch;
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        return HTMLBodyContent;
+        return idFromGeneralSearch;
     }
-
-	public static StringBuilder foursquareReview(String username, String id, String placeName, String address, String phone) throws Exception
+//String searchName, String username, String placeID, int rating, String placeName, double averageRating
+	public static int foursquareReview(String searchName, String location, String username, String id, String placeName, String address, String phone, String rating) throws Exception
     {
         
         System.out.println("-------------Foursquare Reviews-------------");
@@ -112,7 +113,7 @@ public class TestJackson2
         StringBuilder hsb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd");
         String date = sdf.format(new Date());
-        
+        int idFromGeneralSearch = 0;
         url = "https://api.foursquare.com/v2/venues/"+id+"/tips?oauth_token=P14YL1YOGUDWTKBWER14IDBWV4BYBW4ASKCC2GRGDY3F5BZQ&v="+date; 
         Request request = new Request.Builder()
           .url(url)
@@ -122,71 +123,49 @@ public class TestJackson2
         Response response = client.newCall(request).execute();
         String s = response.body().string();
         System.out.print(id + "\n");
-        hsb.append("<h4>" + placeName + "</h4>");
-        hsb.append("<h4>" + address + "</h4>");
-        hsb.append("<h4>" + phone + "</h4>");
+        //hsb.append("<h4>" + placeName + "</h4>");
+        //hsb.append("<h4>" + address + "</h4>");
+        //hsb.append("<h4>" + phone + "</h4>");
         
         JSONObject jo = new JSONObject(s);
         String b; 
         
     		hsb.append("<img src=\"Powered-by-Foursquare-full-color-300_preview.png\" alt=\"Powered by Foursquare\" align=\"left\">\n");
-		hsb.append("<div id = \"reviewsTitle\">\n");
+		/*hsb.append("<div id = \"reviewsTitle\">\n");
         
         hsb.append("<h1><span style=\"color: #060606\">R</span><span style = \"color: #C60C1B\">e</span><span style = \"color: #060606\">v</span><span style = \"color: #C60C1B\">i</span></span><span style = \"color: #060606\">e</span><span style = \"color: #C60C1B\">w</span><span style = \"color: #060606\">s</span></h1>\n");
-        hsb.append("</div>\n");
+        hsb.append("</div>\n");*/
         JSONObject jo1 = jo.getJSONObject("response").getJSONObject("tips");
         JSONArray ja = jo1.getJSONArray("items");
-        hsb.append("<br>");
-	    hsb.append("<h3>Reviews</h3>");
-        hsb.append("<div id = \"reviews\">\n");
+        //hsb.append("<br>");
+	    //hsb.append("<h3>Reviews</h3>");
+       // hsb.append("<div id = \"reviews\">\n");
         for(int i = 0; i < ja.length(); i++)
         {
             JSONObject jo2 = ja.getJSONObject(i);
             b = jo2.getString("text"); 
-            hsb.append("<p>" + b + "</p>");
+            //hsb.append("<p>" + b + "</p>");
             //hsb.append("<p><img id =\"yLogo\" src=\"foursquare.png\" alt=\"Foursquare\"+  "\"</p>");
-            hsb.append("<p>----------------------------------</p>");
-            
-            System.out.println(b + "\n"); 
+            //hsb.append("<p>----------------------------------</p>");
+            idFromGeneralSearch = db.getID(searchName, rating, location);
+            db.storeGeneralResults(searchName, b, placeName, "", "", phone, address, "Foursquare", "", idFromGeneralSearch);
+            //System.out.println(b + "\n"); 
         }  
        
-        hsb.append("</div>");
+        //hsb.append("</div>");
         System.out.println("-------------------------------");
         System.out.println();
-        return hsb;
+        return idFromGeneralSearch;
     }
+	
 
-	// This method will be used by all websites for the HTML
-	private static void createHTML(StringBuilder content) throws Exception
-	{
-		String fileName = "./src/com/cogswell/seniorproject/testfile.html";
-		StringBuilder hsb = new StringBuilder();
-		hsb.append("<!DOCTYPE html>\n");
-		hsb.append("<html><head>\n");
-		hsb.append("<meta charset=\"UTF-8\">\n");
-		hsb.append("<link rel=\"stylesheet\" href=\"htmlstyle.css\">\n");
-		hsb.append("<title>Search Results</title>\n");
-		hsb.append("</head>\n");
-        	hsb.append("<h1 align=\"center\">Results</h1>");
-        hsb.append("<p>__________________________________________________________</p>");           
-        hsb.append("<h2>Place information</h2>");
-        
-        hsb.append("<body>");
-        
-        hsb.append(content);
-        
-        hsb.append("</body>");
-		hsb.append("</html>");
-        WriteToHTML wth = new WriteToHTML(); 
-        wth.WriteToFile(hsb.toString(),fileName);
-        File f = new File(fileName);
-        Desktop.getDesktop().browse(f.toURI());
-	}
+	
 	
 	///////////////////////////////////////////////////////////////////////////////
-	public static StringBuilder testYelp(String username, String term, String location, int rating) throws Exception
+	public static int yelpSearch(String username, String term, String location, int rating) throws Exception
 	{
-        System.out.println("-------------Yelp Test-------------");
+       
+		System.out.println("-------------Yelp Test-------------");
         String url = "https://api.yelp.com/v3/businesses/search?term="+term+"&location="+location;
         
         Request request = new Request.Builder()
@@ -195,13 +174,14 @@ public class TestJackson2
           .addHeader("Authorization", "Bearer ImCmvvA0XcBaU7KsxqVJYelpHHW1ftRTH8rOaTbYHph-7JfrXLhlGVWmtz3aIkhcrVebKlkII5YDnsmsOCynMvA4vACvehTV6mDhIt0E1Kq6dmorjJNrsalilge3WXYx")
           .build();
         
-        StringBuilder HTMLBodyContent = new StringBuilder();
-        HTMLBodyContent.append("<img src=\"yelp1.png\" alt=\"Yelp\" align=\"left\">\n");
-        HTMLBodyContent.append("<br><br>");
+        //StringBuilder HTMLBodyContent = new StringBuilder();
+        //HTMLBodyContent.append("<img src=\"yelp1.png\" alt=\"Yelp\" align=\"left\">\n");
+        //HTMLBodyContent.append("<br><br>");
         
         Response response = client.newCall(request).execute();
-        String s = response.body().string();
         
+        String s = response.body().string();
+        int idFromGeneralResults = 0;
         try 
         {
 			ObjectMapper mapper = new ObjectMapper();
@@ -217,31 +197,66 @@ public class TestJackson2
 			List<JsonNode> ln3 = (ArrayList<JsonNode>)jsonNode.findValues("id");
 			List<JsonNode> ln4 = (ArrayList<JsonNode>)jsonNode.findValues("name");
 			
-			if(jsonNode.findValues("rating") != null)
+			// These need to be fixed. There are some cases where searching for a place there is no price range returned
+			/*if(jsonNode.findValues("rating") != null)
 			{
 				ln5 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
 				
-			}
-			if(jsonNode.findValues("price") != null || !(jsonNode.findValues("price").isEmpty()) || jsonNode.findValues("price").getClass().isInstance(Collections.EMPTY_LIST))
+			}*/
+			if(!(jsonNode.findValues("rating").equals(Collections.<Object>emptyList())))
 			{
-				System.out.println(jsonNode.findValues("price"));
-				List<JsonNode> l = jsonNode.findValues("price");
-				ln6 = (ArrayList<JsonNode>)jsonNode.findValues("price");
-				
+				ln5 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
 			}
+			else
+			{
+				System.out.println("No average rating available");
+			}
+			
+			
+			if(!(jsonNode.findValues("price").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln6 = (ArrayList<JsonNode>)jsonNode.findValues("price");
+			}
+
 			else
 			{
 				System.out.println("No price range available");
 			}
 			List<JsonNode> ln7 = (ArrayList<JsonNode>)jsonNode.findValues("display_address");
 			List<JsonNode> ln8 = (ArrayList<JsonNode>)jsonNode.findValues("display_phone");
+			
+			if(!(jsonNode.findValues("display_address").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln7 = (ArrayList<JsonNode>)jsonNode.findValues("display_address");
+			}
+
+			else
+			{
+				System.out.println("No Address available");
+			}
+			
+			if(!(jsonNode.findValues("display_phone").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln8 = (ArrayList<JsonNode>)jsonNode.findValues("display_phone");
+			}
+
+			else
+			{
+				System.out.println("No Contact info available");
+			}
+			
+			
 			for(int i = 0 ; i < ln2.size(); i++)
 			{
 				System.out.println("---------------------------------------------");
 				for(int j = 0; j < ln5.size(); j++)
 				{
 					ratingAvg = Double.parseDouble(ln5.get(j).toString().replaceAll("\"", " "));
-				    avgRatingMap.put(ln3.get(j).toString() + " : " +  ln4.get(j).toString() + " : " + ln5.get(j).toString() + " : " + ln6.get(j).toString() + " : " + ln7.get(j).toString() + " : " + ln8.get(j).toString(), ratingAvg);
+				    
+					avgRatingMap.put((ln3.isEmpty() ? "" : ln3.get(j).toString()) + " : " +  (ln4.isEmpty() ? "" : ln4.get(j).toString()) + " : " + (ln5.isEmpty() ? "" :  ln5.get(j).toString()) + " : " + (ln6.isEmpty() ? "": ln6.get(j).toString()) + " : " + (ln7.isEmpty() ? "" : ln7.get(j).toString()) + " : " + (ln8.isEmpty() ? "" : ln8.get(j).toString()), ratingAvg);
 				}  
 			}
 			
@@ -274,31 +289,32 @@ public class TestJackson2
 	    				System.out.println(itemArray[4]); // Address
 	    				System.out.println(itemArray[5]); // Phone
 	    				*/
-	    				StringBuilder hsb = yelpReview(term + "-" + location, username, placeName, ID, rating, address, phone, priceRange, rt);
+	    				idFromGeneralResults = yelpReview(term + "-" + location, username, placeName, ID, rating, address, phone, priceRange, rt);
 
 	    				//StringBuilder hsb = yelpReview(term + " " + location, username, itemArray[1], itemArray[0], rating, itemArray[4], itemArray[5], itemArray[3], rt);
-	    				HTMLBodyContent.append(hsb);
+	    				//HTMLBodyContent.append(hsb);
 	    				System.out.println();
 	    			} 		
 		    }	
 		} 
         catch(UnknownHostException uhe)
         {
-        		HTMLBodyContent = db.getResultsOffline(term);
+        		//db.getResultsFromAddress(db.getID(term, Integer.toString(rating), location));
+        	//HTMLBodyContent = db.getResultsFromAddress(db.getID(term, Integer.toString(rating), location));
         }
         catch (JsonGenerationException e) 
         {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} 
         catch (JsonMappingException e) 
         {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} 
         catch (IOException e) 
         {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
-        return HTMLBodyContent;
+        return idFromGeneralResults;
 	}
 	
 	private static String getWeekday(int day)
@@ -372,7 +388,7 @@ public class TestJackson2
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////
-	public static StringBuilder yelpReview(String term, String username, String placeName, String ID, int rating, String address, String phoneNumber, String priceRange, double avgRating) throws Exception
+	public static int yelpReview(String term, String username, String placeName, String ID, int rating, String address, String phoneNumber, String priceRange, double avgRating) throws Exception
     {
         String url = "https://api.yelp.com/v3/businesses/" + ID + "/reviews"; 
         StringBuilder hsb = new StringBuilder();
@@ -382,7 +398,7 @@ public class TestJackson2
           .addHeader("Authorization", "Bearer ImCmvvA0XcBaU7KsxqVJYelpHHW1ftRTH8rOaTbYHph-7JfrXLhlGVWmtz3aIkhcrVebKlkII5YDnsmsOCynMvA4vACvehTV6mDhIt0E1Kq6dmorjJNrsalilge3WXYx")
           .build();
 
-        
+        int idFromGeneralSearch = 0;
 		
         Response response = client.newCall(request).execute();
         String s = response.body().string();
@@ -392,11 +408,14 @@ public class TestJackson2
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(s);
 			
-            hsb.append("<h3>Place Name: <a href=\"https://www.yelp.com/biz/"+ ID + "\" target=\"_blank\">"+ placeName + "</a></h3>");	
-            hsb.append("<h3>Price Range: " + priceRange + "</h3>");			
-            hsb.append("<h3> Phone Number: " + phoneNumber + " </h3>");
-            hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address.replaceAll("\\[", "").replaceAll("\\]","") + "\" target=\"_blank\">"+ address.replaceAll("\\[", "").replaceAll("\\]","") + "</a></h3>");
-            hsb.append("<h3>Average Rating : <img src=\"" + getYelpRatingImage(avgRating) + "\" alt=\"" + avgRating + "\"></h3>");
+			String[] termLocation = term.split("-");
+			idFromGeneralSearch = db.getID(termLocation[0], getStar(rating), termLocation[1]);
+			
+            //hsb.append("<h3>Place Name: <a href=\"https://www.yelp.com/biz/"+ ID + "\" target=\"_blank\">"+ placeName + "</a></h3>");	
+            //hsb.append("<h3>Price Range: " + priceRange + "</h3>");			
+            //hsb.append("<h3> Phone Number: " + phoneNumber + " </h3>");
+            //hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address.replaceAll("\\[", "").replaceAll("\\]","") + "\" target=\"_blank\">"+ address.replaceAll("\\[", "").replaceAll("\\]","") + "</a></h3>");
+            //hsb.append("<h3>Average Rating : <img src=\"" + getYelpRatingImage(avgRating) + "\" alt=\"" + avgRating + "\"></h3>");
             double a = 0;
 			List<JsonNode> ln2 = jsonNode.findValues("reviews");
             
@@ -406,49 +425,45 @@ public class TestJackson2
 			    List<JsonNode> ln4 = (ArrayList<JsonNode>) jsonNode.findValues("text");
 	    			List<JsonNode> ln5 = (ArrayList<JsonNode>) jsonNode.findValues("time_created");
 	    			String hours = getYelpBusinessHours(ID).trim();
-	    			String strArray[] = hours.split(",");	
+	    			//String strArray[] = hours.split(",");	
 	    			
-	    			hsb.append("<div id = \"businessHoursHeader\">\n");
-	    			hsb.append("<h3>Business Hours</h3>");
-	    			hsb.append("</div>\n");
+	    			//hsb.append("<div id = \"businessHoursHeader\">\n");
+	    			//hsb.append("<h3>Business Hours</h3>");
+	    			//hsb.append("</div>\n");
 	    			
-	    			hsb.append("<div class = \"businessHours\">\n");
-	    			for(int j = 0; j < strArray.length; j++)
+	    			//hsb.append("<div class = \"businessHours\">\n");
+	    			/*for(int j = 0; j < strArray.length; j++)
 	    			{
-	    				hsb.append("<h4>" + strArray[j].trim() + "</h4>");
-	    				
-	    			}
-	    			hsb.append("</div>\n");
+	    				hsb.append("<h4>" + strArray[j].trim() + "</h4>");	
+	    			}*/
+	    			//hsb.append("</div>\n");
 			    
 	    			for(int j = 0; j < ln3.size(); j++)
 			    {
 			    	 	a = Double.parseDouble(ln3.get(j).toString());
 			    		review.put(ln4.get(j).toString() + "  " + ln5.get(j).toString(), a);
 			    }
-	    			hsb.append("<div id = \"reviewsTitle\">\n");
+	    			/*hsb.append("<div id = \"reviewsTitle\">\n");
 	    			hsb.append("<h1><span style=\"color: #060606\">R</span><span style = \"color: #C60C1B\">e</span><span style = \"color: #060606\">v</span><span style = \"color: #C60C1B\">i</span></span><span style = \"color: #060606\">e</span><span style = \"color: #C60C1B\">w</span><span style = \"color: #060606\">s</span></h1>\n");
 	    	        hsb.append("<br>");
 	    			hsb.append("</div>\n");
-	    			hsb.append("<div id = \"reviews\">\n");
+	    			hsb.append("<div id = \"reviews\">\n");*/
 			    for(Map.Entry<String, Double> m1: review.entrySet())
 		    		{
 		    			String key = m1.getKey();
 		    			double value = m1.getValue();
 		    			
-	    				hsb.append("<p><img id =\"yLogo\" src=\"Untitled2.png\" alt=\"Yelp\" align=\"left\"> &nbsp; <img id = \"yelpStars\"src=\"" + getYelpRatingImage(value) + "\" alt=\"" + value + "\" align=\"center\"> &nbsp; : &nbsp; " +  key.replace("\"", "") +  "\"</p>");
-	    				hsb.append("<br>");
-	    				hsb.append("<style>#yLogo{	transform: translateY(-13px);	}</style>");
-	    				hsb.append("<style>#yelpStars{	transform: translateX(10px);	}</style>");
-	    				String[] termLocation = term.split("-");
+	    				//hsb.append("<p><img id =\"yLogo\" src=\"Untitled2.png\" alt=\"Yelp\" align=\"left\"> &nbsp; <img id = \"yelpStars\"src=\"" + getYelpRatingImage(value) + "\" alt=\"" + value + "\" align=\"center\"> &nbsp; : &nbsp; " +  key.replace("\"", "") +  "\"</p>");
+	    				//hsb.append("<br>");
+	    				//hsb.append("<style>#yLogo{	transform: translateY(-13px);	}</style>");
+	    				//hsb.append("<style>#yelpStars{	transform: translateX(10px);	}</style>");
 	    				
-	    				int idFromGeneralSearch = db.getID(termLocation[0], getStar(rating), termLocation[1]);
 	    				db.storeGeneralResults(term, (getStar((int)value) + " : " + key.replace("\"", "")), placeName, Double.toString(avgRating), priceRange, phoneNumber, address.replaceAll("\\[", "").replaceAll("\\]","").replace(",",  ", ").replaceAll(",  ", ", "), "Yelp", hours, idFromGeneralSearch);
 		    		}
-			    hsb.append("</div>");
-			    hsb.append("<hr>");
+			    //hsb.append("</div>");
+			    //hsb.append("<hr>");
 			}
-			
-			System.out.println();
+			return idFromGeneralSearch;
 			
 		} 
         catch (JsonGenerationException e) 
@@ -463,11 +478,11 @@ public class TestJackson2
         {
 			e.printStackTrace();
 		} 
-        return hsb;
+        return idFromGeneralSearch;
     }
 	/*----------------------------------------------------------------------------------------------------------------*/
 	
-    public static StringBuilder testGoogle(String username, String searchTerm, String location, int rating) throws Exception
+    public static int googleSearch(String username, String searchTerm, String location, int rating) throws Exception
     {
         String query = searchTerm + "-" + location;
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+query+"&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw";
@@ -475,7 +490,8 @@ public class TestJackson2
           .url(url)
           .get()
           .build();
-        StringBuilder HTMLBodyContent = new StringBuilder();
+        int getIDFromGeneralResults = 0;
+        //StringBuilder HTMLBodyContent = new StringBuilder();
         Response response = client.newCall(request).execute();
         String s = response.body().string();
         try 
@@ -484,15 +500,58 @@ public class TestJackson2
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Double> avgRatingMap = new HashMap<String, Double>();
 			JsonNode jsonNode = mapper.readTree(s);
-			List<JsonNode> ln2 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_address");
-			List<JsonNode> ln3 = (ArrayList<JsonNode>)jsonNode.findValues("place_id");
-			List<JsonNode> ln4 = (ArrayList<JsonNode>)jsonNode.findValues("name");
-			List<JsonNode> ln5 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
+			
+			List<JsonNode> ln2 = new ArrayList<JsonNode>();// (ArrayList<JsonNode>)jsonNode.findValues("formatted_address");
+			List<JsonNode> ln3 = new ArrayList<JsonNode>();//(ArrayList<JsonNode>)jsonNode.findValues("place_id");
+			List<JsonNode> ln4 = new ArrayList<JsonNode>();//(ArrayList<JsonNode>)jsonNode.findValues("name");
+			List<JsonNode> ln5 = new ArrayList<JsonNode>();//(ArrayList<JsonNode>)jsonNode.findValues("rating");
+			
+			if(!(jsonNode.findValues("formatted_address").equals(Collections.<Object>emptyList())))
+			{
+				ln2 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_address");
+			}
+			else
+			{
+				System.out.println("No address available at this time");
+			}
+			
+			
+			if(!(jsonNode.findValues("place_id").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln3 = (ArrayList<JsonNode>)jsonNode.findValues("place_id");
+			}
+			else
+			{
+				System.out.println("No place ID available at this time");
+			}
+			
+			if(!(jsonNode.findValues("name").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln4 = (ArrayList<JsonNode>)jsonNode.findValues("name");
+			}
+			else
+			{
+				System.out.println("No name available at this time");
+			}
+			
+			if(!(jsonNode.findValues("rating").equals(Collections.<Object>emptyList())))
+			{
+				
+				ln5 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
+			}
+			else
+			{
+				System.out.println("No rating available at this time");
+			}
 			
 			for(int i = 0 ; i < ln5.size(); i++)
 			{
 				ratingAvg = Double.parseDouble(ln5.get(i).toString().replaceAll("\"", ""));
-			    avgRatingMap.put(ln2.get(i).toString().replace("\"", "") + " : " + ln3.get(i).toString().replace("\"", "") + " : " +  ln4.get(i).toString().replace("\"", ""), ratingAvg);
+			    //(ln6.isEmpty() ? "": ln6.get(j).toString())
+				
+				avgRatingMap.put(ln2.isEmpty() ? "": ln2.get(i).toString().replace("\"", "") + " : " + (ln3.isEmpty() ? "" : ln3.get(i).toString().replace("\"", "")) + " : " +  (ln4.isEmpty() ? "" : ln4.get(i).toString().replace("\"", "")), ratingAvg);
 			    System.out.println();
 
 			}
@@ -502,7 +561,7 @@ public class TestJackson2
 		    		double rt = m1.getValue();
 		    		if((int)rt >= rating)
 	    			{
-	    				//String item = tx + " : " + getStar((int) rt);
+	    				
 	    				String[] itemArray = tx.split(" : ");
 	    				System.out.println(itemArray[0]); // Address
 	    				System.out.println(itemArray[1]); // Place ID
@@ -510,9 +569,9 @@ public class TestJackson2
 	    				System.out.println(rt + " : " +  getStar((int) rt));
 	    				
 	    				System.out.println();
-	    				StringBuilder hsb = googleReview(query, username, itemArray[1], rating, itemArray[2], rt);
+	    				/*StringBuilder hsb*/ getIDFromGeneralResults = googleReview(query, username, itemArray[1], rating, itemArray[2], rt);
 
-	    				HTMLBodyContent.append(hsb);
+	    				//HTMLBodyContent.append(hsb);
 
 	    			}
 		    }
@@ -529,10 +588,11 @@ public class TestJackson2
         {
 			e.printStackTrace();
 		}  
-        return HTMLBodyContent;
+        //return HTMLBodyContent;
+        return getIDFromGeneralResults;
     }
     //										
-    public static StringBuilder googleReview(String searchName, String username, String placeID, int rating, String placeName, double averageRating) throws Exception
+    public static int googleReview(String searchName, String username, String placeID, int rating, String placeName, double averageRating) throws Exception
     {
         String url = String.format("https://maps.googleapis.com/maps/api/place/details/json?placeid=%s&key=AIzaSyD5c5wzVL8X9RCspE6aA_BOGU5W8UjS0Pw", placeID);
         Request request = new Request.Builder()
@@ -540,13 +600,12 @@ public class TestJackson2
           .get()
           .build();
         //
-        StringBuilder hsb = new StringBuilder();
+        //StringBuilder hsb = new StringBuilder();
         Response response = client.newCall(request).execute();
         String s = response.body().string();
+        int idFromGeneralSearch = 0;
         try 
         {
-        		//WriteToHTML wth = new WriteToHTML();
-        		
         		Map<String, Double> review = new HashMap<String, Double>();
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(s);
@@ -554,67 +613,70 @@ public class TestJackson2
 			List<JsonNode> ln1 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_phone_number");
 			List<JsonNode> ln5 = (ArrayList<JsonNode>)jsonNode.findValues("formatted_address");
 			
+			String[] termLocation = searchName.split("-");
+			idFromGeneralSearch = db.getID(termLocation[0], getStar(rating), termLocation[1]);
 			
 			// Here write header of HTML file
 			
 			for(int i = 0; i < ln1.size(); i++)
 			{
-				hsb.append("<h3>Place Name: " + placeName + "</h3>");
+				//hsb.append("<h3>Place Name: " + placeName + "</h3>");
 				
-				hsb.append("<h3> Phone Number: " + ln1.get(i).toString().replace("\"", "") + " </h3>\n");
-				hsb.append("<h3> Address: \n<a href=\"https://www.google.com/maps/place/"+ ln5.get(i).toString().replace("\"", "") + "\" target=\"_blank\">"+ ln5.get(i).toString().replace("\"", "") + "</a></h3>\n");
-				hsb.append("<h3>Average Rating: &nbsp " + getStar((int) averageRating) + "</h3>");			
+				//hsb.append("<h3> Phone Number: " + ln1.get(i).toString().replace("\"", "") + " </h3>\n");
+				//hsb.append("<h3> Address: \n<a href=\"https://www.google.com/maps/place/"+ ln5.get(i).toString().replace("\"", "") + "\" target=\"_blank\">"+ ln5.get(i).toString().replace("\"", "") + "</a></h3>\n");
+				//hsb.append("<h3>Average Rating: &nbsp " + getStar((int) averageRating) + "</h3>");			
 			}
 			
 			List<JsonNode> ln2 = (ArrayList<JsonNode>)jsonNode.findValues("reviews");
 			double a = 0;
 				
 			/*------------------------------------------------------------------------------------*/
-			hsb.append("<p>-------------------------------------------------------------</p>\n");
+			/*hsb.append("<p>-------------------------------------------------------------</p>\n");
 			hsb.append("<img src=\"powered_by_google_on_white.png\" alt=\"Powered by Google\" align=\"left\">\n");
 			hsb.append("<br>");
-            	hsb.append("</br>");
-            	hsb.append("<div id = \"reviews\">\n");
+            	hsb.append("</br>");*/
+            //	hsb.append("<div id = \"reviews\">\n");
             
 			for(int i = 0; i < ln2.size(); i++)
 			{
 				System.out.println(ln6.get(i).toString());
 			    List<JsonNode> ln3 = (ArrayList<JsonNode>)jsonNode.findValues("rating");
 	    			List<JsonNode> ln4 = (ArrayList<JsonNode>)jsonNode.findValues("text");
-	    			hsb.append("<div id = \"googleHours\">");
-	    			hsb.append("<h3>Business Hours</h3>");	 
-	    			hsb.append("<h4>" + ln6.get(i).toString().replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "\n").replaceAll(",", "<br>") + "</h4>");
-	    			hsb.append("</div>");
+	    			//hsb.append("<div id = \"googleHours\">");
+	    			//hsb.append("<h3>Business Hours</h3>");	 
+	    			//hsb.append("<h4>" + ln6.get(i).toString().replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "\n").replaceAll(",", "<br>") + "</h4>");
+	    			//hsb.append("</div>");
 	    			for(int j = 0; j < ln4.size(); j++)
 			    {
 			    	 	a = Double.parseDouble(ln3.get(j+1).toString());
 			    		review.put(ln4.get(j).toString(), a);
 			    }
-			    hsb.append("<br>");
-			    hsb.append("<div id = \"reviewsTitle\">\n");
-	            hsb.append("<h1><span style=\"color: #346DF1\">R</span><span style = \"color: #E23E3E\">e</span><span style = \"color: #F8B823\">v</span><span style = \"color: #2D9B42\">i</span></span><span style = \"color: #F8B823\">e</span><span style = \"color: #E23E3E\">w</span><span style = \"color: #346DF1\">s</span></h1>\n");
-	            hsb.append("</div>\n");
-			    hsb.append("<h3>Reviews</h3>");
+	    			//hsb.append("<hr>");
+			    //hsb.append("<br>");
+			    //hsb.append("<div id = \"reviewsTitle\">\n");
+	            //hsb.append("<h1><span style=\"color: #346DF1\">R</span><span style = \"color: #E23E3E\">e</span><span style = \"color: #F8B823\">v</span><span style = \"color: #2D9B42\">i</span></span><span style = \"color: #F8B823\">e</span><span style = \"color: #E23E3E\">w</span><span style = \"color: #346DF1\">s</span></h1>\n");
+	            //hsb.append("</div>\n");
+			    //hsb.append("<h3>Reviews</h3>");
 			    for(Map.Entry<String, Double> m1: review.entrySet())
 		    		{
 		    			String key = m1.getKey();
 		    			double value = m1.getValue();
 	    				String item = getStar((int) value) + " : " + key;	
 	    				System.out.println(item);
-	    				hsb.append("<p>" + "<img src=\"powered_by_google_on_white_mini.png\" alt=\"Powered by Google\" align=\"left\"> &nbsp; " + item + "</p>\n");
+	    				//hsb.append("<p>" + "<img src=\"powered_by_google_on_white_mini.png\" alt=\"Powered by Google\" align=\"left\"> &nbsp; " + item + "</p>\n");
+	    				
 	    				for(int j = 0; j < ln1.size(); j++)
 	    				{
-	    					String[] termLocation = searchName.split("-");
-		    				int idFromGeneralSearch = db.getID(termLocation[0], getStar(rating), termLocation[1]);
+	    					/*String[] termLocation = searchName.split("-");
+		    				int idFromGeneralSearch = db.getID(termLocation[0], getStar(rating), termLocation[1]);*/
 	    					
-	    					db.storeGeneralResults(searchName, item, placeName, Double.toString(averageRating), "", ln1.get(j).toString(), ln5.get(i).toString().replace("\"" ,  "")/*.replaceAll("^[0-9]{*}$,.*","")*/, "Google", ln6.get(j).toString(), idFromGeneralSearch);
+	    					db.storeGeneralResults(searchName, item, placeName, Double.toString(averageRating), "", ln1.get(j).toString().replaceAll("\"", ""), ln5.get(i).toString().replace("\"" ,  "")/*.replaceAll("^[0-9]{*}$,.*","")*/, "Google", ln6.get(j).toString(), idFromGeneralSearch);
 	    				}
 		    		} 
-			   hsb.append("<hr>");
-			   //hsb.append("<p>------------------------------------------------------------------------</p>\n");
+			  // hsb.append("<hr>");
 			}
-			hsb.append("</div>\n");
-
+			//hsb.append("</div>\n");
+			return idFromGeneralSearch;
 		} 
         catch (JsonGenerationException e) 
         {
@@ -628,7 +690,8 @@ public class TestJackson2
         {
 			e.printStackTrace();
 		} 
-        return hsb;
+        //return hsb;
+        return idFromGeneralSearch;
     }
     
     public static String getYelpRatingImage(double rating) 
@@ -679,7 +742,167 @@ public class TestJackson2
     		}
     }
     
-    // TRY TO ADD ICON OF SITE NEXT TO EACH REVIEW
+ // This method will be used by all websites for the HTML
+ 	private static void createHTML(int id) throws Exception
+ 	{
+ 		String fileName = "./src/com/cogswell/seniorproject/testfile.html";
+ 		StringBuilder hsb = new StringBuilder();
+ 		hsb.append("<!DOCTYPE html>\n");
+ 		hsb.append("<html><head>\n");
+ 		hsb.append("<meta charset=\"UTF-8\">\n");
+ 		hsb.append("<link rel=\"stylesheet\" href=\"htmlstyle.css\">\n");
+ 		hsb.append("<title>Search Results</title>\n");
+ 		hsb.append("</head>\n");
+         	hsb.append("<h1 align=\"center\">Results</h1>");
+         hsb.append("<p>__________________________________________________________</p>");           
+         //hsb.append("<h2>Place information</h2>");
+         hsb.append("<h2> <font size=\"5\" face = \"Arial\"> Place Information</font> </h2>");
+         String previousAddress = "", previousPlaceName= "", previousSiteName = "";
+         hsb.append("<body>");
+         ResultSet rs = db.getResultsFromAddress(id);
+         System.out.println("ID is : " + id);
+         while(rs.next())
+         {
+        	 		
+         		String placeName = rs.getString("placeName");
+ 				
+ 				double avgRating = rs.getString("avgRating").isEmpty() ? 0 : Double.parseDouble(rs.getString("avgRating"));
+ 				
+ 				String priceRange = rs.getString("priceRange");
+ 				String phoneNumber = rs.getString("phoneNumber");
+ 				String address = rs.getString("address");
+ 				//previousAddress = address;
+ 				String siteName = rs.getString("siteName");
+ 				String results = rs.getString("results");
+ 				String ratingStar = "";//results.substring(0, results.indexOf(":") - 1);
+ 				if(results.indexOf(":") > 0)
+ 				{
+ 					ratingStar = results.substring(0, results.indexOf(":") - 1); // -1 because we don't want the string to show the :
+ 				}
+ 				String businessHours = rs.getString("businessHours").replaceAll(",", "<br>").replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+ 				String text = results.substring(results.indexOf(":") + 1);
+ 				
+ 				if(!placeName.equals(previousPlaceName))
+ 				{
+ 					hsb.append("<h3>Place Name:"+ placeName + "</h3>");	
+ 				}
+ 				
+ 				//hsb.append("<h3>Place Name:"+ placeName + "</h3>");	
+    				//hsb.append("<h3>Price Range:"+ priceRange + "</h3>");	
+    				//hsb.append("<h3>Phone Number:"+ phoneNumber + "</h3>");	
+    	            
+    				if(!address.contains(previousAddress))
+ 				{
+    					hsb.append("<h3>Price Range:"+ priceRange + "</h3>");	
+        				hsb.append("<h3>Phone Number:"+ phoneNumber + "</h3>");	
+	            		hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address + "\" target=\"_blank\">"+ address + "</a></h3>");	
+	            		hsb.append("<div id = \"businessHoursHeader\">\n");
+	 	    			hsb.append("<h3>Business Hours</h3>");
+	 	    			hsb.append("</div>\n");
+	 	    			hsb.append("<h4>" + businessHours + "</h4>");
+ 				}
+    				
+    				//hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address + "\" target=\"_blank\">"+ address + "</a></h3>");	
+    	            	//hsb.append("<h3>Average Rating : <img src=\"" + avgRating + "\" alt=\"" + avgRating + "\"></h3>");
+    	            //	hsb.append("<h3>Average Rating : " + getStar((int)avgRating) + "alt= " + avgRating + "></h3>");
+    	            	if(!siteName.equals(previousSiteName))
+    	            	{
+    	            		switch(siteName)
+	 	    			{
+	 	    				case "Google":
+	 	    	            		hsb.append("<h3>Average Rating : " + getStar((int)avgRating) + "\" alt=\"" + avgRating + "\">" + "</h3>");
+	 		    	            break;
+	 	    				
+	 	    				case "Yelp":
+	 	    					hsb.append("<h3>Average Rating : <img src=\"" + getYelpRatingImage(avgRating) + "\" alt=\"" + avgRating + "\"></h3>");
+	 	    					break;
+	 	    			}
+    	            		hsb.append("<div id = \"reviewsTitle\">\n");
+    	 	    			hsb.append("<div id = \"reviews\">\n");
+    	            	}
+    	            	
+    	            /*	hsb.append("<div id = \"businessHoursHeader\">\n");
+ 	    			hsb.append("<h3>Business Hours</h3>");
+ 	    			hsb.append("</div>\n");
+ 	    			hsb.append("<h4>" + businessHours + "</h4>");*/
+ 	    			
+ 	    			//hsb.append("<hr>");
+ 	    			
+ 	    			/*hsb.append("<div id = \"reviewsTitle\">\n");
+ 	    			hsb.append("<div id = \"reviews\">\n");*/
+ 	    			switch(siteName)
+ 	    			{
+ 	    				case "Google":
+ 	    	            		//hsb.append("<h3>Average Rating : <img src=\"" + getStar((int)avgRating) + "\" alt=\"" + avgRating + "\"></h3>");
+ 	    	            		//hsb.append("<br>");
+ 	    					if(!siteName.equals(previousSiteName))
+ 	    					{
+ 	    	            			hsb.append("<h1><span style=\"color: #346DF1\">R</span><span style = \"color: #E23E3E\">e</span><span style = \"color: #F8B823\">v</span><span style = \"color: #2D9B42\">i</span></span><span style = \"color: #F8B823\">e</span><span style = \"color: #E23E3E\">w</span><span style = \"color: #346DF1\">s</span></h1>\n");
+ 	    					}
+ 		    	            hsb.append("<p align=\"left\"<img src=\"powered_by_google_on_white_mini.png\" alt=\"Powered by Google\" align=\"left\"> &nbsp; " + ratingStar + "&nbsp;" + text + "</p>");
+ 		    	            hsb.append("</div>");
+ 		    	            break;
+ 	    				
+ 	    				case "Yelp":
+ 	    					//hsb.append("<h3>Average Rating : <img src=\"" + getYelpRatingImage(avgRating) + "\" alt=\"" + avgRating + "\"></h3>");
+ 	    					//hsb.append("<br>");
+ 	    					if(!siteName.equals(previousSiteName))
+ 	    					{
+ 	 	    					hsb.append("<h1><span style=\"color: #060606\">R</span><span style = \"color: #C60C1B\">e</span><span style = \"color: #060606\">v</span><span style = \"color: #C60C1B\">i</span></span><span style = \"color: #060606\">e</span><span style = \"color: #C60C1B\">w</span><span style = \"color: #060606\">s</span></h1>\n");
+ 	    					}
+ 		    	            //hsb.append("<p align=\"left\"><img src=\"yelp.png\" alt=\"Yelp\" align=\"left\"> &nbsp; " + getYelpStarImage(ratingStar) + "&nbsp;" + text + "</p>");
+ 		    				hsb.append("<p align = \"left\"><img id =\"yLogo\" src=\"Untitled2.png\" alt=\"Yelp\" align=\"left\"> &nbsp; &nbsp; <img id = \"yelpStars\"src=\"" + getYelpStarImage(ratingStar) + "\" alt=\"" + ratingStar + "\" align=\"center\"> &nbsp; : &nbsp; " +  text +  "\"</p>");
+ 		    				hsb.append("<br>");
+ 		    				hsb.append("</div>");
+ 		    				break;
+ 		    	            
+ 	    				case "Foursquare":
+ 	    					//#b3b3b3
+ 	    					hsb.append("<h1><span style=\"color: #002C8E\">F</span><span style=\"color: #b3b3b3\">o</span><span style=\"color: #002C8E\">u</span><span style=\"color: #b3b3b3\">r</span><span style=\"color: #002C8E\">s</span><span style=\"color: #b3b3b3\">q</span><span style=\"color: #002C8E\">u</span><span style=\"color: #b3b3b3\">a</span><span style=\"color: #002C8E\">r</span><span style=\"color: #b3b3b3	\">e</span></h1>\n");
+ 	    					hsb.append("<br>");
+ 	    					hsb.append("<p align=\"left\"<img src=\"foursquare.png\" alt=\"Foursquare\" align=\"left\"> &nbsp; " + ratingStar + "&nbsp;" + text + "</p>");
+ 	    					hsb.append("</div>");
+ 	    			}
+ 	    			//hsb.append("<p>" + results + "</p>");
+ 	    			hsb.append("</div>");
+ 	    			previousAddress = address;
+ 	    			previousPlaceName = placeName;
+ 	    			previousSiteName = siteName;
+ 				
+         }
+         hsb.append("<hr>");
+         // createContent(id);
+         //hsb.append(content);
+         
+         hsb.append("</body>");
+ 		 hsb.append("</html>");
+         WriteToHTML wth = new WriteToHTML(); 
+         wth.WriteToFile(hsb.toString(),fileName);
+         File f = new File(fileName);
+         Desktop.getDesktop().browse(f.toURI());
+ 	}
+    
+ 	
+ 	public static String getYelpStarImage(String rating)
+    {
+        switch(rating)
+        {
+            case "★":
+            		return "small_1.png";
+            case "★★":
+            		return "small_2.png";
+            case "★★★":
+            		return "small_3.png";
+            case "★★★★":
+            		return "small_4.png";
+            case "★★★★★":
+            		return "small_5.png";
+            default:
+            	return "small_3.png";   
+        }
+    }
+    
+  
     /*
      * 	getStar() returns the ★ string based on number rating
      */
@@ -766,25 +989,27 @@ public class TestJackson2
     public static void search(String username, String searchTerm, String cityOrZip, String rating, int distance, int price, Set<String> listOfFilters) throws Exception
     {
         int r = getRating(rating);
-        StringBuilder search;
+        //StringBuilder search;
+        int id = 0;
         for(String searchFilterName: listOfFilters)
         {
             switch(searchFilterName.toLowerCase())
             {
                 case "yelp":
                     //testYelp(searchTerm, cityOrZip, r, price, distance);
-                    search = testYelp(username, searchTerm, cityOrZip, r);
-                    createHTML(search);
+                    /*search*/ id = yelpSearch(username, searchTerm, cityOrZip, r);
+                    //createHTML(search);
                     break;
                     
                 case "foursquare":
-                    search = testFoursquare(username, searchTerm, cityOrZip);
-                    createHTML(search);
+                    
+                		/*search*/ id = foursquareSearch(username, searchTerm, cityOrZip, rating);
+                    //createHTML(search);
                     break;
                     
                 case "google": case "google places":
-                    search = testGoogle(username, searchTerm, cityOrZip, r);
-                    createHTML(search);
+                    /*search*/ id = googleSearch(username, searchTerm, cityOrZip, r);
+                    //createHTML(search);
                     break;
                     
                 default:
@@ -792,6 +1017,7 @@ public class TestJackson2
                     break;
             } 
         }
+        createHTML(id);
     }
     
     public static void main(String[] args) throws Exception
@@ -811,14 +1037,22 @@ public class TestJackson2
         {
         		//String x = getYelpBusinessHours("ldPsoxeD3bPgwXWwF2_QJA");
         		
-        		 //StringBuilder search = testYelp("", term, location, rating);
+        		 //StringBuilder search = yelpSearch("", term, location, rating);
+        		
+        	
+        		//int id = googleSearch("", term, location, rating);
+        		int id = yelpSearch("", term, location, rating);
+        	
+        	
+        		//StringBuilder search = googleSearch("", term, location, rating); 
+        		 //search.append(yelpSearch("", term, location, rating));
         		 //search = testGoogle("", term, location, rating);
-        		 StringBuilder search =  testGoogle("", term, location, rating);
+        		 //StringBuilder search =  googleSearch("", term, location, rating);
         		 //createHTML(search);
         		 //StringBuilder 
         		 //search = testFoursquare("", term, location);
         		 //createHTML(search);
-        		 
+        		createHTML(id); 
         }
         else
         {

@@ -27,14 +27,15 @@ public class SearchDAO
 	private static int zipcode, distance;
 	private static String rating;
 	private static String price;
+	private static String selectAddressFromGeneralResults = "select * from generalResults where searchID = ? order by address, siteName;";
 	private static String selectFromGeneralResults = "select * from generalResults where searchName = ?;";
-	//private static String insertIntoUserResult = "insert into userSearch values ('?');";
+	private static String insertIntoUserResults = "insert into userResults values (?,?,?,?,?,?,?,?,?,?,?, ?);";
 	private static String insertIntoGeneralResult = "insert into generalResults values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	private static String selectIDFromGeneralSearch = "select max(id) from generalSearch where name = ? and rating = ? and city = ?;";
 	//private static String insertIntoPopularSearch = "insert into userSearch values ('?');";
 	private static String selectFromUserProfile = "select * from userProfile where username = ? and password = ?;";
 	private static String selectFromUserProfileDetails = "select * from userProfile where username = ?;";
-	private static String insertIntoUserSearch = "insert into userSearch values (?, ?, ?, ?, ?, ?, ?)";
+	private static String insertIntoUserSearch = "insert into userSearch values (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";
 	//private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
 	private static String insertIntoUserProfile = "insert into userProfile (username, firstName, lastName, password, zipcode, email, address) values (?, ?, ?, ?, ?, ?, ?);";
@@ -228,12 +229,13 @@ public class SearchDAO
 	    		    		ps.setInt(5, userID);
 	    		    		ps.setString(6, price);
 	    		    		ps.setString(7, date);
+	    		    		ps.setString(8, userName);
     	                
     	                System.out.println(ps);
     	                
     	                try
     	                {
-    	                		ps.executeUpdate();
+	    	                		ps.executeUpdate();
     	                }
     	                catch(Exception e)
     	                {
@@ -452,22 +454,68 @@ public class SearchDAO
    		return null;
    		
    	}
-   	
-   	public static void getResultsFromAddress()
+   	// This is used to show all reviews based on address from different sites
+   	// This will return string builder
+   	// select everything from results table and order them by address and site name
+   	// append them to HTML
+   	public static ResultSet getResultsFromAddress(int ID)
    	{
    		try
    		{
+   			String previousAddress = "";
+   			//TestJackson2 test = new TestJackson2();
+   			c1 = getConnection();
+   			StringBuilder hsb = new StringBuilder();
+   			PreparedStatement ps = c1.prepareStatement(selectAddressFromGeneralResults);
+   			ps.setInt(1, ID);
+   			ResultSet rs = ps.executeQuery();
+   			return rs;
    			
+   			/*if(rs.next())
+   			{
+   				
+   				String placeName = rs.getString("placeName");
+   				String avgRating = rs.getString("avgRating");
+   				String priceRange = rs.getString("priceRange");
+   				String phoneNumber = rs.getString("phoneNumber");
+   				String address = rs.getString("address");
+   				previousAddress = address;
+   				String siteName = rs.getString("siteName");
+   				String results = rs.getString("results");
+   				String businessHours = rs.getString("businessHours");
+   				
+   				if(!(address.contains(previousAddress)))
+   				{
+   					hsb.append("<h3>Place Name:"+ placeName + "</h3>");	
+   	   				hsb.append("<h3>Price Range Name:"+ priceRange + "</h3>");	
+   	   				hsb.append("<h3>Phone Number:"+ phoneNumber + "</h3>");	
+   	   	            	hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address + "\" target=\"_blank\">"+ address + "</a></h3>");	
+   	   	            	hsb.append("<h3>Average Rating : <img src=\"" + avgRating + "\" alt=\"" + avgRating + "\"></h3>");
+   	   	            	hsb.append("<div id = \"businessHoursHeader\">\n");
+   		    			hsb.append("<h3>Business Hours</h3>");
+   		    			hsb.append("</div>\n");
+   		    			hsb.append("<h4>" + businessHours + "</h4>");
+   		    			hsb.append("<hr>");
+   		    			//hsb.append("<p>" + results + "</p>");
+   				}
+   				else
+   				{
+   					hsb.append("<p>" + siteName +  "</p>");
+   					hsb.append("<p>" + results + "</p>");
+   				}*/ 			
    		}
    		catch(Exception e)
    		{
-   			
+   			return null;
    		}
+   		
    	}
+   	
    	
    	
    	public int getID(String term, String rating, String cityOrZip)
    	{
+   		int col = 0;
    		try
    		{
    			c1 = getConnection();
@@ -479,18 +527,58 @@ public class SearchDAO
    			ResultSet rs = ps.executeQuery();
    			if(rs.next())
    			{
-   				int col = rs.getInt(1);
+   				col = rs.getInt(1);
    				return col;
    			}
    		}
    		catch(Exception e)
    		{
-   			
+   			e.printStackTrace();
    		}
-   		
-   		return 0;
+   		return col;
    	}
    	
+   	public void storeUserResults(String username, String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
+   	{
+   		try
+		{
+    			//System.out.println("Rating is: " + rating);
+    			// String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address
+            c1 = getConnection();
+            PreparedStatement ps = c1.prepareStatement(insertIntoUserResults);
+            
+            ps.setString(1, username);
+            ps.setString(2, searchName);
+            ps.setString(3, results);
+            ps.setString(4, placeName);
+            ps.setString(5, avgRating);
+            ps.setString(6, priceRange);
+            ps.setString(7, phone);
+            ps.setString(8,  address);
+            ps.setString(9, sourceName);
+            ps.setString(10,  businessHours);
+            ps.setString(11, dateStr);
+            ps.setInt(12, searchID);
+            
+            System.out.println(ps);
+            
+            try
+            {
+            		ps.execute();
+            }
+            catch(SQLException se)
+            {
+            		se.printStackTrace();
+            }
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+   	}
+
+   	
+  //public void storeUserResults(String username, String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
    	public void storeGeneralResults(String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
    	{
    		try
@@ -507,9 +595,9 @@ public class SearchDAO
             ps.setString(5, priceRange);
             ps.setString(6, phone);
             ps.setString(7, address);
-            ps.setString(8,  sourceName);
+            ps.setString(8, sourceName);
             ps.setString(9, businessHours);
-            ps.setInt(10,  searchID);
+            ps.setInt(10, searchID);
             
             System.out.println(ps);
             
@@ -804,7 +892,6 @@ public class SearchDAO
     
     public static ArrayList<String> numOfTimesSearched(String curDate) throws Exception
     {
-    		
     		try
     		{
     			ArrayList<String> list = new ArrayList<String>();
@@ -847,6 +934,7 @@ public class SearchDAO
     
     public static void main(String[] args) throws Exception
     {
+    		getResultsFromAddress(122);
         getConnection();
     }
 }
