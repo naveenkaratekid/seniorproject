@@ -209,22 +209,50 @@ public class LoginButtonHandler implements EventHandler<ActionEvent> {
           				price.setText(strArray[4]);
           				String strArray3 = strArray[3].replaceAll("\\[|\\,|\\]", "");
           				System.out.println(strArray3);
-          				if(strArray3.contains("google places"))
+          				if(strArray3.contains("Google") || strArray3.contains("google places"))
           				{
           					googlePlaces.setSelected(true);
-      						filters.add("Google Places".toLowerCase());
+      						filters.add("Google");
+      						
           				}
-          				if(strArray3.contains("yelp"))
+          				if(strArray3.contains("Yelp")|| strArray3.contains("yelp"))
           				{
           					yelp.setSelected(true);
-      						filters.add("Yelp".toLowerCase());
+      						filters.add("Yelp");
           				}
           				
-          				if(strArray3.contains("foursquare"))
+          				if(strArray3.contains("Foursquare") || strArray3.contains("foursquare"))
           				{
           					foursquare.setSelected(true);
-      						filters.add("Foursquare".toLowerCase());
+      						filters.add("Foursquare");
           				}
+          				
+          				///
+          				
+          				if(strArray3.equals("Google") || strArray3.equals("google places"))
+          				{
+          					googlePlaces.setSelected(true);
+          					yelp.setSelected(false);
+          					foursquare.setSelected(false);
+      						filters.add("Google");
+      						
+          				}
+          				if(strArray3.equals("Yelp")|| strArray3.equals("yelp"))
+          				{
+          					yelp.setSelected(true);
+          					googlePlaces.setSelected(false);
+          					foursquare.setSelected(false);
+      						filters.add("Yelp");
+          				}
+          				
+          				if(strArray3.equals("Foursquare") || strArray3.equals("foursquare"))
+          				{
+          					foursquare.setSelected(true);
+          					googlePlaces.setSelected(false);
+          					yelp.setSelected(false);
+      						filters.add("Foursquare");
+          				}
+          				
           				
           				price.setText(strArray[4]);
           			}

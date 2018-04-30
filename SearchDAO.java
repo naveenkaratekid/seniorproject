@@ -19,8 +19,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 public class SearchDAO
 {
-    // instance variables - replace the example below with your own
-	//private static List<String> listOfFilteredSites;
 	private static String dr = "com.mysql.jdbc.Driver", url = "jdbc:mysql://localhost:3306/test?characterEncoding=UTF-8";
     private static String name = "root", pwd = "39808";
 	private static Connection c1;
@@ -30,7 +28,6 @@ public class SearchDAO
 	private static String price;
 	private static String selectAddressFromGeneralResults = "select * from generalResults where searchID = ? order by address, siteName;";
 	private static String selectAddressFromUserResults = "select * from userResults where searchID = ? order by address, siteName;";
-	//private static String selectFromGeneralResults = "select * from generalResults where searchName = ?;";
 	private static String selectFromUserResultsOffline = "select max(searchID) from userResults where searchName = ? and siteName = ? and username = ?;";
 	private static String insertIntoUserResults = "insert into userResults values (?,?,?,?,?,?,?,?,?,?,?);";
 	private static String insertIntoGeneralResult = "insert into generalResults values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -40,8 +37,7 @@ public class SearchDAO
 	private static String selectFromUserProfile = "select * from userProfile where username = ? and password = ?;";
 	private static String selectFromUserProfileDetails = "select * from userProfile where username = ?;";
 	private static String insertIntoUserSearch = "insert into userSearch (name, zipcodeOrCity, rating, listOfSites, userID, price, date, username)values (?, ?, ?, ?, ?, ?, ?, ?)";
-	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";
-	//private static String numOfTimesSearchedCall = "{call numOfTimesSearched (?,?,?,?)};";
+	private static String updateUserProfile = "update userProfile set username = ?, firstname = ?, lastName = ?, password = ?, zipcode = ?, email = ?, address = ? where username = ?;";	
 	private static String insertIntoUserProfile = "insert into userProfile (username, firstName, lastName, password, zipcode, email, address) values (?, ?, ?, ?, ?, ?, ?);";
 	private static String insertIntoGeneralSearch = "insert into generalSearch (name, rating, siteName, distance, city, price, date) values (?, ?, ?, ?, ?, ?, ?)";
 	private static String selectFromUserProfileID = "select userID from userProfile where username = ?;";
@@ -49,7 +45,6 @@ public class SearchDAO
 	private static String getUserSearchHistory = "select * from userSearch where userID = ?;";
 	private static String getCountOfUserSearch = "select count(*) from userSearch where userID = ? and username = ?;";
 	private static String getCountOfGeneralSearch = "select count(*) from generalSearch where name = ?;";
-	//private static String getCountOfUserSearch = "select userID from userProfile where username = ?;";
 	private static Date date = new Date();
     private static SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 	private static String dateStr = df.format(date);
@@ -57,7 +52,7 @@ public class SearchDAO
 	
 	public SearchDAO()
     {
-    		//c1 = getConnection();
+    		
     }
     
 	
@@ -746,15 +741,12 @@ public class SearchDAO
 		}
    	}
 
-   	
-  //public void storeUserResults(String username, String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
-   	public void storeGeneralResults(String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
+   	   	public void storeGeneralResults(String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address, String sourceName, String businessHours, int searchID)
    	{
    		try
 		{
     			
-    			//System.out.println("Rating is: " + rating);
-    			// String searchName, String results, String placeName, String avgRating, String priceRange, String phone, String address
+    			
             c1 = getConnection();
             PreparedStatement ps = c1.prepareStatement(insertIntoGeneralResult);
             ps.setString(1, searchName);
@@ -776,7 +768,7 @@ public class SearchDAO
             }
             catch(SQLException se)
             {
-            		//continue;
+            		
             		se.printStackTrace();
             }
 		}
@@ -815,28 +807,7 @@ public class SearchDAO
 		    		return col;
 		    		
 		    }
-		    //PreparedStatement ps = c1.prepareStatement(selectFromGeneralResultsOffline);
-		     
-		    
-		    
-		    /*if(rs.next())
-		    {
-		    		String term = rs.getString(1);
-		    		String text = rs.getString(2);
-		    		String placeName = rs.getString(3);
-		    		Double avgRating = Double.parseDouble(rs.getString(4));
-		    		String priceRange = rs.getString(5);
-		    		String phoneNumber = rs.getString(6);
-		    		String address = rs.getString(7);
-		    		
-		    		String result = firstName + " " + lastName;
-		    		System.out.println(result);
-		    		//return result;
-		    }
-		    else 
-		    {
-		    		return null;
-		    }    */
+		   
    		}
 	    catch(Exception e)
 	    	{
@@ -937,62 +908,6 @@ public class SearchDAO
 	     s11.show();
 	     
     }
-    
-    /*public static String storeUserProfile(String username, String firstName, String lastName, String password, int zipcode, String email, String address) throws MySQLIntegrityConstraintViolationException
-    {
-        try
-        {	
-            c1 = getConnection();
-            
-            PreparedStatement ps1 = c1.prepareStatement(selectFromUserProfileEnroll);
-            ps1.setString(1, username);
-            System.out.println(ps1);
-            ResultSet rs = ps1.executeQuery();
-            
-            if(!rs.next())
-            {
-            	    PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
-                ps.setString(1, username);
-                ps.setString(2, firstName);
-                ps.setString(3, lastName);
-                ps.setString(4, password);
-                ps.setInt(5, zipcode);
-                ps.setString(6,  email);
-                ps.setString(7, address);
-                System.out.println(ps);
-                //ps.execute(); 
-            }
-            
-            PreparedStatement ps = c1.prepareStatement(insertIntoUserProfile);
-            ps.setString(1, username);
-            ps.setString(2, firstName);
-            ps.setString(3, lastName);
-            ps.setString(4, password);
-            ps.setInt(5, zipcode);
-            ps.setString(6,  email);
-            ps.setString(7, address);
-            System.out.println(ps);
-            
-            try
-            {
-            	 	ps.execute(); 
-            	 	return "";
-            }
-            catch(Exception e)
-            {
-            		return "This account already exists";
-            		//throw new MySQLIntegrityConstraintViolationException("This account already exists"); 		
-            }   
-        }
-        catch(Exception e)
-        {
-        		//e.printStackTrace();
-        		//accountExists();
-        }
-        return "";
-    }*/
-    
-    
 
     /*
      * storeUserProfile() will store the user's profile data containing:
