@@ -653,6 +653,7 @@ public class APICaller
          {
         	 	rs = db.getResultsFromAddress(id, SearchType.general);
          }
+         
          else
          {
         	 	rs = db.getResultsFromAddress(id, SearchType.user);
@@ -680,12 +681,14 @@ public class APICaller
  				}
  				String results = rs.getString("results");
  				String ratingStar = "";
+ 				
  				if(results.indexOf(":") > 0)
  				{
  					ratingStar = results.substring(0, results.indexOf(":") - 1); // -1 because we don't want the string to show the :
  				}
  				String businessHours = rs.getString("businessHours").replaceAll(",", "<br>").replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
  				String text = results.substring(results.indexOf(":") + 1);
+ 				
  				if(first)
  				{
  					hsb.append("<h3>Place Name:"+ placeName + "</h3>");	
@@ -696,19 +699,23 @@ public class APICaller
  					if (!first && (!(address.contains(previousAddress))))
 					{
 						hsb.append("</table>");
+						
 						if(setOfSites.contains("Google"))
 						{
 	    	            			hsb.append("<h3>Google's Average Rating : " + getStar((int)avgRatingForGoogle) /*+ " alt = " + avgRatingForGoogle +*/+ "</h3>");
 						}
+						
 						if(setOfSites.contains("Yelp"))
 						{
  	    						hsb.append("<h3>Yelp's Average Rating : <img src=\"" + getYelpRatingImage(avgRatingForYelp) + "\"" + "alt=\"" + avgRatingForYelp + "\"></h3>");
 						}
+						
 						if(setOfSites.contains("Foursquare"))
 						{
  	    						hsb.append("<h3>Foursquare's Average Rating : " + avgRatingForFoursquare + /*"alt=\"" + avgRatingForFoursquare +*/ "></h3>");
 						}
 					}
+ 					
  					if(!(address.contains(previousAddress)))	
  							hsb.append("<hr>");
  					
@@ -719,7 +726,6 @@ public class APICaller
     	            
     				if(!(address.contains(previousAddress)) || first)
  				{
-    					
     					hsb.append("<h3>Price Range:"+ priceRange + "</h3>");	
         				hsb.append("<h3>Phone Number:"+ phoneNumber + "</h3>");	
 	            		hsb.append("<h3>Address: <a href=\"https://www.google.com/maps/place/"+ address + "\" target=\"_blank\">"+ address + "</a></h3>");	
@@ -752,9 +758,9 @@ public class APICaller
     				
     	            	if(!siteName.equals(previousSiteName))
     	            	{
-    	            		
     	 	    			hsb.append("<div id = \"reviews\">\n");
     	            	}
+    	            
     	            	if(!(address.contains(previousAddress)) || first)
  				{
     	            		hsb.append("<table>");
@@ -770,45 +776,34 @@ public class APICaller
  	    			switch(siteName)
  	    			{
  	    				case "Google":
- 	    					hsb.append("<tr>");
-	    	            		
+ 	    					hsb.append("<tr>");    	            		
  	    					hsb.append("<td>" + ratingStar + "</td>");
- 	    					hsb.append("<td width = \"200\" height = \"50\">" + text + "</td>");
- 	    					
+ 	    					hsb.append("<td width = \"200\" height = \"50\">" + text + "</td>");	    					
  	    					hsb.append("<td><img src=\"powered_by_google_on_white1.png\" alt=\"Google\" align=\"center\"> &nbsp; </td>");
- 	    					hsb.append("</tr>");
- 	    					
+ 	    					hsb.append("</tr>");		
  		    	            break;
  	    				
  	    				case "Yelp":
- 	    					
- 	    					
  	    					hsb.append("<tr>");	
-
  	    					hsb.append("<td><img src=\"" + getYelpStarImage(ratingStar) + "\" alt=\"" + ratingStar + "\"></td>");
  	    					hsb.append("<td width = \"200\" height = \"50\">" + text + "</td>");
  	    					hsb.append("<td><img src=\"Untitled2.png\" alt=\"Yelp\" align=\"center\"> &nbsp;</td>");
  	    					hsb.append("</tr>");
-
  		    				break;
  		    	            
  	    				case "Foursquare":
  	    					//#b3b3b3
  	    					hsb.append("<tr>");
-
  	    					hsb.append("<td></td>");
  	    					hsb.append("<td width = \"200\" height = \"50\">" + text + "</td>");
  	    					hsb.append("<td><img src=\"foursquare.png\" alt=\"Foursquare\" align=\"center\"> &nbsp;</td>");
- 	    					hsb.append("</tr>");
- 	    					
+ 	    					hsb.append("</tr>");		
  	    			}
  	    			hsb.append("</div>");
  	    			
  	    			previousAddress = address;
  	    			previousPlaceName = placeName;
  	    			previousSiteName = siteName;
- 	    			
- 				
          }
         
          hsb.append("<hr>");
