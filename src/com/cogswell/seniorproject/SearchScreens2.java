@@ -659,7 +659,7 @@ public class SearchScreens2 extends Application
 	    {
 	        public void handle(ActionEvent ae)
 	        {
-	        		if((searchField.getText() == null || searchField.getText().isEmpty()) || (zipCodeOrCity.getText() == null || zipCodeOrCity.getText().isEmpty()))
+	        		if((searchField.getText() == null || searchField.getText().isEmpty()) || (zipCodeOrCity.getText() == null || zipCodeOrCity.getText().isEmpty() || ((!googlePlaces.isSelected() && !foursquare.isSelected() && !yelp.isSelected()))))
 	        		{
 	        			Stage s11 = new Stage();
 	        			s11.setResizable(false);
@@ -668,7 +668,7 @@ public class SearchScreens2 extends Application
 	        		     gp.setHgap(20);
 	        		     gp.setVgap(20);
 	        		     gp.setPadding(new Insets(25,25,25,25));   
-	        		     Text t = new Text("You must enter a search criteria and location");
+	        		     Text t = new Text("You must enter a search criteria,\nlocation, and sites to search from");
 	        		     t.setTranslateX(10);
 	        		     t.setTranslateY(10);
 	        		     t.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
@@ -690,7 +690,7 @@ public class SearchScreens2 extends Application
 		        	   			if(ratingMenu.getText() == "Rating")
 		        	   			{
 		        	   				ratingMenu.setText(test.getStar(rating));
-		        	   				ratingMenu.setTextFill(Color.YELLOW);
+		        	   				ratingMenu.setTextFill(Color.YELLOWGREEN);
 		        	   			}
 		        	   			
 		        	   			if(price.getText() == "Select Price Range")
@@ -721,7 +721,7 @@ public class SearchScreens2 extends Application
 		    	   				if(ratingMenu.getText() == "Rating")
 		    	   				{
 		    	   					ratingMenu.setText(test.getStar(rating));
-		    	   					ratingMenu.setTextFill(Color.YELLOW);
+		    	   					ratingMenu.setTextFill(Color.YELLOWGREEN);
 		    	   				}
 		    	   				db.storeUserSearch(db.getUsername(), searchField.getText(), zipCodeOrCity.getText(), ratingMenu.getText(), filters, test.getPriceSymbol(priceRange), dateStr);		
 

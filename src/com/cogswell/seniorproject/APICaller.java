@@ -167,7 +167,9 @@ public class APICaller
 	{
 		int price = getPrice(priceRangeStr);
 		System.out.println("-------------Yelp Test-------------");
-        String url = "https://api.yelp.com/v3/businesses/search?term="+term+"&location="+location + "&price="+price;
+        //String url = "https://api.yelp.com/v3/businesses/search?term="+term+"&location="+location + "&price="+price;
+        String url = "https://api.yelp.com/v3/businesses/search?term="+term+"&location="+location;
+
         Response response = null;
         String searchTerm = term + "-" + location;
         int idFromResults = 0;
@@ -307,7 +309,7 @@ public class APICaller
 				System.out.println("---------------------------------------------");
 				for(int j = 0; j < ln3.size(); j++)
 				{
-					ratingAvg = Double.parseDouble(ln5.get(j).toString().replaceAll("\"", " "));
+					ratingAvg = Double.parseDouble(ln5.get(j).toString().replaceAll("\"", ""));
 				    
 					avgRatingMap.put((ln3.isEmpty() ? "" : ln3.get(j).toString()) + " : " +  (ln4.isEmpty() ? "" : ln4.get(j).toString()) + " : " + (ln5.isEmpty() ? "" :  ln5.get(j).toString()) + " : " + (ln6.isEmpty() ? "": ln6.get(j).toString()) + " : " + (ln7.isEmpty() ? "" : ln7.get(j).toString()) + " : " + (ln8.isEmpty() ? "" : ln8.get(j).toString()), ratingAvg);
 				}  
@@ -643,6 +645,7 @@ public class APICaller
  		hsb.append("<title>Search Results</title>\n");
  		hsb.append("</head>\n");
 		hsb.append("<h1><span style=\"color: #346DF1\">R</span><span style = \"color: #E23E3E\">e</span><span style = \"color: #F8B823\">s</span><span style = \"color: #2D9B42\">u</span></span><span style = \"color: #F8B823\">l</span><span style = \"color: #E23E3E\">t</span><span style = \"color: #002C8E\">s</span></h1>\n");
+		hsb.append(username.equals("Not Logged In") || username.isEmpty() ? "" : "<h1>For: "  + username + "</h1>");
  		
 		hsb.append("<p>__________________________________________________________</p>");           
         String previousAddress = "", previousPlaceName= "", previousSiteName = "";
