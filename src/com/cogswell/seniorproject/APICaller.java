@@ -712,7 +712,7 @@ public class APICaller
 						
 						if(setOfSites.contains("Foursquare"))
 						{
- 	    						hsb.append("<h3>Foursquare's Average Rating : " + avgRatingForFoursquare + /*"alt=\"" + avgRatingForFoursquare +*/ "></h3>");
+ 	    						hsb.append("<h3>Foursquare's Average Rating : " + avgRatingForFoursquare + /*"alt=\"" + avgRatingForFoursquare +*/ "</h3>");
 						}
 					}
  					
@@ -1062,8 +1062,8 @@ public class APICaller
                     break;
                     
                 default:
-                    id = googleSearch(username, searchTerm, cityOrZip, r);
-                		//System.out.println("Sorry. Your search criteria is not valid");
+                    
+                		System.out.println("Sorry. Your search criteria is not valid");
                     break;
             } 
         }

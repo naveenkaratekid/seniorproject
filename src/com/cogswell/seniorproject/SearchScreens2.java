@@ -283,7 +283,7 @@ public class SearchScreens2 extends Application
 	   
 	   	CheckBox googlePlaces = new CheckBox();
 	   	googlePlaces.setDisable(true);
-	   	filters.add("Google");
+	   	
 	   	Image googleLogo = new Image((getClass().getResource("powered_by_google_on_white.png")).toExternalForm());
 	   	ImageView googleView = new ImageView(googleLogo);
 	   	
