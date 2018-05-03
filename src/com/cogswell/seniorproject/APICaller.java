@@ -807,9 +807,11 @@ public class APICaller
          }
         
          hsb.append("<hr>");
-
+        
          hsb.append("</body>");
  		 hsb.append("</html>");
+ 		 WriteToHTML wth = new WriteToHTML(); 
+ 		 wth.WriteToFile(hsb.toString(),fileName);
          File f = new File(fileName);
          Desktop.getDesktop().browse(f.toURI());
  	}

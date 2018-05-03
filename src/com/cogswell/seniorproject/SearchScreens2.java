@@ -283,7 +283,6 @@ public class SearchScreens2 extends Application
 	   
 	   	CheckBox googlePlaces = new CheckBox();
 	   	googlePlaces.setDisable(true);
-	   	googlePlaces.setSelected(true);
 	   	filters.add("Google");
 	   	Image googleLogo = new Image((getClass().getResource("powered_by_google_on_white.png")).toExternalForm());
 	   	ImageView googleView = new ImageView(googleLogo);
@@ -308,7 +307,7 @@ public class SearchScreens2 extends Application
 	   	}
 	   );
 	   
-	   	googleView.setTranslateX(20);
+	   	googleView.setTranslateX(0);
 	   	googleView.setTranslateY(500);
 	   
 	   	CheckBox foursquare = new CheckBox();
@@ -344,7 +343,7 @@ public class SearchScreens2 extends Application
 	   	yelp.setTranslateX(-225);
 	   	yelp.setTranslateY(500);
 	   
-	   	googlePlaces.setTranslateX(-10);
+	   	googlePlaces.setTranslateX(-30);
 	   	googlePlaces.setTranslateY(500);
 	   
 	   	foursquare.setTranslateX(265);
@@ -692,6 +691,12 @@ public class SearchScreens2 extends Application
 		        	   			{
 		        	   				ratingMenu.setText(test.getStar(rating));
 		        	   				ratingMenu.setTextFill(Color.YELLOW);
+		        	   			}
+		        	   			
+		        	   			if(price.getText() == "Select Price Range")
+		        	   			{
+		        	   				price.setText(test.getPriceSymbol(priceRange));
+		        	   				price.setTextFill(Color.GREEN);
 		        	   			}
 		        	   			//db.storeGeneralSearch(searchField.getText(), zipCodeOrCity.getText(), distance, ratingMenu.getText(), filters, test.getPriceSymbol(priceRange));	
 		        	   			

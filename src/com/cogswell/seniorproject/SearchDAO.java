@@ -512,19 +512,10 @@ public class SearchDAO
 			    		String price = rs.getString(6);
 			    		
 			    		String search =  searchName + " | " + zipcodeOrCity + " | " + rating + " | " + sites + " | " + price;
-			    		/*System.out.println(searchName);
-			    		System.out.println(zipcodeOrCity);
-			    		System.out.println(rating);
-			    		System.out.println(sites);
-			    		System.out.println(price);*/
+			    		
 			    		
 			    		searchHistoryList.add(search);
 			    		
-			    		/*searchHistoryList.add(searchName);
-			    		searchHistoryList.add(zipcodeOrCity);
-			    		searchHistoryList.add(rating);
-			    		searchHistoryList.add(sites);
-			    		searchHistoryList.add(price);*/
 			    		
 			    }
 			    else 
@@ -533,55 +524,7 @@ public class SearchDAO
 			    }
 				
 			}
-			/*if(rs.next())
-		    {
-		    		String searchName = rs.getString(1);
-		    		String zipcodeOrCity = rs.getString(2);
-		    		String rating = rs.getString(3);
-		    		String sites = rs.getString(4);
-		    		String price = rs.getString(6);
-		    		
-		    		System.out.println(searchName);
-		    		System.out.println(zipcodeOrCity);
-		    		System.out.println(rating);
-		    		System.out.println(sites);
-		    		System.out.println(price);
-		    		
-		    		searchHistoryList.add(searchName);
-		    		searchHistoryList.add(zipcodeOrCity);
-		    		searchHistoryList.add(rating);
-		    		searchHistoryList.add(sites);
-		    		searchHistoryList.add(price);
-		    		return searchHistoryList;
-		    }
-		    else 
-		    {
-		    		return null;
-		    }*/
-   			
-   			/*PreparedStatement ps = c1.prepareStatement(getUserSearchHistory);
-   			ps.setInt(1, userID);
-   			
-   			ResultSet rs = ps.executeQuery();
-		    
-		    if(rs.next())
-		    {
-		    		String searchName = rs.getString(1);
-		    		String zipcodeOrCity = rs.getString(2);
-		    		String rating = rs.getString(3);
-		    		String sites = rs.getString(4);
-		    		String price = rs.getString(6);
-		    		searchHistoryList.add(searchName);
-		    		searchHistoryList.add(zipcodeOrCity);
-		    		searchHistoryList.add(rating);
-		    		searchHistoryList.add(sites);
-		    		searchHistoryList.add(price);
-		    	
-		    }
-		    else 
-		    {
-		    		return null;
-		    }*/
+			
 			return searchHistoryList;	
    		}
    		catch(Exception e)
